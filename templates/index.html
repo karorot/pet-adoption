@@ -8,11 +8,31 @@
 
 <body>
   <h1>Rehome a pet</h1>
+  {% if session.username %}
   <p>
-    <ul>
-      <li>Log in</li>
-      <li><a href="/register">Sign up</a></li>
-    </ul>
+    You're logged in as {{ session.username }}
+  </p>
+  <p>
+    <a href="/logout">Log out</a>
+  </p>
+  {% else %}
+  <form action="/login" method="post">
+    Log in to adopt or list a pet for a new home.
+    <p>
+      Username: <br />
+      <input type="text" name="username" required />
+    </p>
+    <p>
+      Password: <br />
+      <input type="password" name="password" required />
+    </p>
+    <input type="submit" value="Log in" />
+  </form>
+  <p>
+    Don't have an account yet?<br />
+    <a href="/register">Sign up</a>
+  </p>
+  {% endif %}
 </body>
 
 </html>
