@@ -5,6 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 import db
 import config
+import pets
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
@@ -42,26 +43,35 @@ def create_user():
     username = request.form["username"]
     password1 = request.form["password1"]
     password2 = request.form["password2"]
+    first_name = request.form["first_name"]
+    last_name = request.form["last_name"]
+    location = request.form["location"]
     if password1 != password2:
         return "Error: The passwords don't match.<br /><a href='/register'>Try again</a>."
     password_hash = generate_password_hash(password1)
 
     try:
-        sql = """INSERT INTO users (username, password_hash) VALUES (?, ?)"""
-        db.execute(sql, [username, password_hash])
+        sql = """INSERT INTO users (username, password_hash, first_name, last_name, location) VALUES (?, ?, ?, ?, ?)"""
+        db.execute(sql, [username, password_hash, first_name, last_name, location])
     except sqlite3.IntegrityError:
         return "Error: The username is already taken.<br /><a href='/register'>Try again</a>."
-    return "Account created!<br /><a href='/'>Log in</a>."
+    return "Account created!<br /><a href='/'>Log in</a>"
 
 @app.route("/login", methods=["POST"])
 def login():
     username = request.form["username"]
     password = request.form["password"]
 
-    sql = """SELECT password_hash FROM users WHERE username = ?"""
-    password_hash = db.query(sql, [username])[0][0]
+    sql = """SELECT id, password_hash FROM users WHERE username = ?"""
+    result = db.query(sql, [username])
+    if not result:
+        return "Error: No user found.<br /><a href='/register'>Sign up</a>"
+
+    user_id = result[0]["id"]
+    password_hash = result[0]["password_hash"]
 
     if check_password_hash(password_hash, password):
+        session["user_id"] = user_id
         session["username"] = username
         return redirect("/")
     return "Error: Wrong username or password.<br /><a href='/'>Return</a>."
@@ -69,4 +79,5 @@ def login():
 @app.route("/logout")
 def logout():
     del session["username"]
+    del session["user_id"]
     return redirect("/")
