@@ -58,6 +58,20 @@ def update_pet():
     pets.update_pet(pet_id, name, birth_year, pet_type, breed, gender, size, description)
     return redirect("/pet/" + str(pet_id))
 
+@app.route("/delete_pet/<int:pet_id>", methods=["GET", "POST"])
+def delete_pet(pet_id):
+    pet = pets.get_pet(pet_id)
+
+    if request.method == "GET":
+        return render_template("delete_pet.html", pet=pet)
+    
+    if request.method == "POST":
+        if "delete" in request.form:
+            pets.delete_pet(pet_id)
+            return redirect("/")
+        else:
+            return redirect("/pet/" + str(pet_id))
+
 @app.route("/register")
 def register():
     return render_template("register.html")
