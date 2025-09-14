@@ -10,16 +10,28 @@
   <h2>Create an account</h2>
   <form action="/create_user" method="post">
     <p>
-      Username: <br />
-      <input type="text" name="username" required />
+      <label for="username">Username:</label><br />
+      <input type="text" name="username" id="username" required />
     </p>
     <p>
-      Password: <br />
-      <input type="password" name="password1" required />
+      <label for="password1">Password:</label><br />
+      <input type="password" name="password1" id="password1" required />
     </p>
     <p>
-      Repeat password: <br />
-      <input type="password" name="password2" required />
+      <label for="password2">Repeat password:</label><br />
+      <input type="password" name="password2" id="password2" required />
+    </p>
+    <p>
+      <label for="first_name">First name:</label><br />
+      <input type="text" name="first_name" id="first_name" required />
+    </p>
+    <p>
+      <label for="last_name">Last name</label><br />
+      <input type="text" name="last_name" id="last_name" required />
+    </p>
+    <p>
+      <label for="location">Location (city, country)</label><br />
+      <input type="text" name="location" id="location" required />
     </p>
     <input type="submit" value="Create an account" />
   </form>
