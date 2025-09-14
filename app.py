@@ -34,6 +34,11 @@ def add_pet():
     pet_id = db.last_insert_id()
     return redirect("/pet/" + str(pet_id))
 
+@app.route("/pet/<int:pet_id>")
+def show_pet(pet_id):
+    profile = pets.get_pet(pet_id)
+    return render_template("show_pet.html", pet=profile)
+
 @app.route("/register")
 def register():
     return render_template("register.html")

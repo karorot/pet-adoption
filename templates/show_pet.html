@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <title>{{ pet.name }}</title>
+</head>
+
+<body>
+  <h3>{{ pet.name }}</h3>
+  <p>
+    <ul>
+      <li>{{ pet.breed }}</li>
+      <li>{{ pet.size }}</li>
+      <li>{{ pet.gender }}</li>
+      <li>Born in {{ pet.birth_year}}</li>
+      <li>Lives in {{ pet.location }}</li>
+    </ul>
+  </p>
+  <p>
+    {{ pet.description }}
+  </p>
+  <p>
+    Owner: {{ pet.owner }}
+  </p>
+  <hr />
+  {% if session.user_id == pet.user_id %}
+  <p>
+    <ul>
+      <li>Update your pet's profile</li>
+      <li>Delete this listing</li>
+      <li>Modify pictures</li>
+    </ul>
+  </p>
+  {% elif session.user_id %}
+  <p>
+    Would you like to adopt {{ pet.name }}? <br />
+    Fill in the form to apply
+  </p>
+  {% else %}
+  <p>
+    Please <a href="/register">create an account</a> to apply for this pet.
+  </p>
+  {% endif %}
+  <p>
+    <a href="/">Return to all listings</a>
+  </p>
+
+</body>
+
+</html>
