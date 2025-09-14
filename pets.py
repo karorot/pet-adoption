@@ -12,10 +12,10 @@ def add_pet(name, birth_year, pet_type, breed, gender, size, description, user_i
     sql = """INSERT INTO pets (name, birth_year, pet_type, breed, gender, size, description, user_id)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)"""
     db.execute(sql, [name, birth_year, pet_type, breed, gender, size, description, user_id])
-    return
 
 def get_pet(pet_id):
-    sql = """SELECT p.name,
+    sql = """SELECT p.id,
+                    p.name,
                     p.birth_year,
                     p.pet_type,
                     p.breed,
@@ -30,3 +30,15 @@ def get_pet(pet_id):
                     p.id = ?"""
     result = db.query(sql, [pet_id])
     return result[0] if result else None
+
+def update_pet(pet_id, name, birth_year, pet_type, breed, gender, size, description):
+    sql = """UPDATE pets
+            SET name = ?, 
+                birth_year = ?, 
+                pet_type = ?, 
+                breed = ?, 
+                gender = ?,
+                size = ?,
+                description = ?
+            WHERE id = ?"""
+    db.execute(sql, [name, birth_year, pet_type, breed, gender, size, description, pet_id])

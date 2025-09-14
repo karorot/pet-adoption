@@ -27,7 +27,7 @@
   {% if session.user_id == pet.user_id %}
   <p>
     <ul>
-      <li>Update your pet's profile</li>
+      <li><a href="/edit_pet/{{ pet.id }}">Update this listing</a></li>
       <li>Delete this listing</li>
       <li>Modify pictures</li>
     </ul>

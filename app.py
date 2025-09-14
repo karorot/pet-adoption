@@ -36,8 +36,27 @@ def add_pet():
 
 @app.route("/pet/<int:pet_id>")
 def show_pet(pet_id):
-    profile = pets.get_pet(pet_id)
-    return render_template("show_pet.html", pet=profile)
+    pet = pets.get_pet(pet_id)
+    return render_template("show_pet.html", pet=pet)
+
+@app.route("/edit_pet/<int:pet_id>")
+def edit_pet(pet_id):
+    pet = pets.get_pet(pet_id)
+    return render_template("edit_pet.html", pet=pet)
+
+@app.route("/update_pet", methods=["POST"])
+def update_pet():
+    pet_id = request.form["pet_id"]
+    name = request.form["name"]
+    birth_year = request.form["birth_year"]
+    pet_type = request.form["pet_type"]
+    breed = request.form["breed"]
+    gender = request.form["gender"]
+    size = request.form["size"]
+    description = request.form["description"]
+
+    pets.update_pet(pet_id, name, birth_year, pet_type, breed, gender, size, description)
+    return redirect("/pet/" + str(pet_id))
 
 @app.route("/register")
 def register():
