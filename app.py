@@ -12,6 +12,24 @@ app.secret_key = config.secret_key
 @app.route("/")
 def index():
     return render_template("index.html")
+@app.route("/new_pet")
+def new_pet():
+    return render_template("new_pet.html")
+
+@app.route("/add_pet", methods=["POST"])
+def add_pet():
+    name = request.form["name"]
+    birth_year = request.form["birth_year"]
+    pet_type = request.form["pet_type"]
+    breed = request.form["breed"]
+    gender = request.form["gender"]
+    size = request.form["size"]
+    description = request.form["description"]
+    user_id = session["user_id"]
+
+    pets.add_pet(name, birth_year, pet_type, breed, gender, size, description, user_id)
+    pet_id = db.last_insert_id()
+    return redirect("/pet/" + str(pet_id))
 
 @app.route("/register")
 def register():

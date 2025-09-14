@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <title>List a pet</title>
+</head>
+
+<body>
+  {% if session.user_id %}
+  <h2>Create a new listing for your pet</h2>
+  Fill in the required information and a short description of your pet.
+  <form action="/add_pet" method="post">
+    <p>
+      <label for="name">Name:</label><br />
+      <input type="text" name="name" id="name" maxlength="50" required />
+    </p>
+    <p>
+      <label for="birth_year">Year of birth:</label><br />
+      <input type="number" step="1" name="birth_year" id="birth_year" required />
+    </p>
+    <p>
+      <!--To do: Add classes here for pet type-->
+      <label for="pet_type">Type of pet:</label><br/>
+      <select name="pet_type" id="pet_type">
+        <option value="">(valitse)</option>
+        <option value="dog">Dog</option>
+        <option value="cat">Cat</option>
+        <option value="other">Other</option>
+      </select>
+    </p>
+    <p>
+      <label for="breed">Breed:</label><br />
+      <input type="text" name="breed" id="breed" maxlength="50" required />
+    </p>
+    <p>
+      <!--To do: Add classes here for gender-->
+      <label for="size">Gender:</label><br />
+      <select name="gender" id="gender">
+        <option value="">(valitse)</option>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+      </select>
+    </p>
+    <p>
+      <!--To do: Add classes here for pet size-->
+      <label for="size">Size:</label><br />
+      <select name="size" id="size">
+        <option value="">(valitse)</option>
+        <option value="small">Small</option>
+        <option value="medium">Medium</option>
+        <option value="large">Large</option>
+      </select>
+    </p>
+    <p>
+      <label for="description">Description:</label><br />
+      <textarea name="description" rows="8" cols="50" maxlength="1000" required></textarea>
+    </p>
+    <input type="submit" value="List your pet" />
+  </form>
+  {% endif %}
+</body>
+
+</html>
