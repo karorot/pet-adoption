@@ -15,9 +15,13 @@
   <p>
     <a href="/logout">Log out</a>
   </p>
+
+  <h2>List a pet for a new home</h2>
+  Create a profile for your pet: <a href="/new_pet">Fill the form</a>.
+
   {% else %}
   <form action="/login" method="post">
-    Log in to adopt or list a pet for a new home.
+    Log in to apply for adoption or list a pet for a new home.
     <p>
       Username: <br />
       <input type="text" name="username" required />
@@ -33,6 +37,19 @@
     <a href="/register">Sign up</a>
   </p>
   {% endif %}
+
+  <h2>Find a pet for adoption</h2>
+  {% for listing in listings %}
+  <p>
+    <b>{{listing.name}}</b><br />
+    <i>{{listing.breed}}</i><br />
+    Born in {{listing.birth_year}}<br />
+    Currently located at {{listing.location}}<br />
+    Read more about <a href="pet/{{ listing.id }}">{{listing.name}}</a>
+  </p>
+  <hr />
+  {% endfor %}
+
 </body>
 
 </html>

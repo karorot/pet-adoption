@@ -11,7 +11,9 @@ app.secret_key = config.secret_key
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    all_pets = pets.get_all_pets()
+    return render_template("index.html", listings=all_pets)
+
 @app.route("/new_pet")
 def new_pet():
     return render_template("new_pet.html")
