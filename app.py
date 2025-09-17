@@ -1,14 +1,18 @@
 import sqlite3
 from flask import Flask
-from flask import redirect, render_template, request, session
-from werkzeug.security import generate_password_hash, check_password_hash
+from flask import redirect, render_template, request, session, abort
 
 import db
 import config
 import pets
+import users
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
+
+def require_login():
+    if "user_id" not in session:
+        abort(403)
 
 @app.route("/")
 def index():
@@ -17,10 +21,13 @@ def index():
 
 @app.route("/new_pet")
 def new_pet():
+    require_login()
     return render_template("new_pet.html")
 
 @app.route("/add_pet", methods=["POST"])
 def add_pet():
+    require_login()
+
     name = request.form["name"]
     birth_year = request.form["birth_year"]
     pet_type = request.form["pet_type"]
@@ -41,12 +48,23 @@ def show_pet(pet_id):
 
 @app.route("/edit_pet/<int:pet_id>")
 def edit_pet(pet_id):
+    require_login()
+    
     pet = pets.get_pet(pet_id)
+    if pet["user_id"] != session["user_id"]:
+        abort(403)
+
     return render_template("edit_pet.html", pet=pet)
 
 @app.route("/update_pet", methods=["POST"])
 def update_pet():
+    require_login()
+
     pet_id = request.form["pet_id"]
+    pet = pets.get_pet(pet_id)
+    if pet["user_id"] != session["user_id"]:
+        abort(403)
+
     name = request.form["name"]
     birth_year = request.form["birth_year"]
     pet_type = request.form["pet_type"]
@@ -60,7 +78,11 @@ def update_pet():
 
 @app.route("/delete_pet/<int:pet_id>", methods=["GET", "POST"])
 def delete_pet(pet_id):
+    require_login()
+
     pet = pets.get_pet(pet_id)
+    if pet["user_id"] != session["user_id"]:
+        abort(403)
 
     if request.method == "GET":
         return render_template("delete_pet.html", pet=pet)
@@ -86,36 +108,34 @@ def create_user():
     location = request.form["location"]
     if password1 != password2:
         return "Error: The passwords don't match.<br /><a href='/register'>Try again</a>."
-    password_hash = generate_password_hash(password1)
 
     try:
-        sql = """INSERT INTO users (username, password_hash, first_name, last_name, location) VALUES (?, ?, ?, ?, ?)"""
-        db.execute(sql, [username, password_hash, first_name, last_name, location])
+        users.create_user(username, password1, first_name, last_name, location)
     except sqlite3.IntegrityError:
         return "Error: The username is already taken.<br /><a href='/register'>Try again</a>."
+    
     return "Account created!<br /><a href='/'>Log in</a>"
 
-@app.route("/login", methods=["POST"])
+@app.route("/login", methods=["GET", "POST"])
 def login():
-    username = request.form["username"]
-    password = request.form["password"]
+    if request.method == "GET":
+        return render_template("index.html")
+    
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
 
-    sql = """SELECT id, password_hash FROM users WHERE username = ?"""
-    result = db.query(sql, [username])
-    if not result:
-        return "Error: No user found.<br /><a href='/register'>Sign up</a>"
-
-    user_id = result[0]["id"]
-    password_hash = result[0]["password_hash"]
-
-    if check_password_hash(password_hash, password):
-        session["user_id"] = user_id
-        session["username"] = username
-        return redirect("/")
-    return "Error: Wrong username or password.<br /><a href='/'>Return</a>."
+        user_id = users.check_login(username, password)
+        if user_id:
+            session["user_id"] = user_id
+            session["username"] = username
+            return redirect("/")
+        return "Error: Wrong username or password.<br /><a href='/'>Return</a>"
     
 @app.route("/logout")
 def logout():
-    del session["username"]
+    require_login()
+
     del session["user_id"]
+    del session["username"]
     return redirect("/")
