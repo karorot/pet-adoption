@@ -29,21 +29,34 @@ def add_pet():
     require_login()
 
     name = request.form["name"]
+    if not name or len(name) > 50:
+        abort(403)
     birth_year = request.form["birth_year"]
-    pet_type = request.form["pet_type"]
+    if not birth_year or not isinstance(birth_year, int):
+        abort(403)
     breed = request.form["breed"]
+    if not breed or len(breed) > 50:
+        abort(403)
+    pet_type = request.form["pet_type"]
     gender = request.form["gender"]
     size = request.form["size"]
     description = request.form["description"]
+    if not description or len(description) > 1000:
+        abort(403)
     user_id = session["user_id"]
 
-    pets.add_pet(name, birth_year, pet_type, breed, gender, size, description, user_id)
+    try:
+        pets.add_pet(name, birth_year, pet_type, breed, gender, size, description, user_id)
+    except sqlite3.IntegrityError:
+        abort(403)
     pet_id = db.last_insert_id()
     return redirect("/pet/" + str(pet_id))
 
 @app.route("/pet/<int:pet_id>")
 def show_pet(pet_id):
     pet = pets.get_pet(pet_id)
+    if not pet:
+        abort(404)
     return render_template("show_pet.html", pet=pet)
 
 @app.route("/edit_pet/<int:pet_id>")
@@ -51,6 +64,8 @@ def edit_pet(pet_id):
     require_login()
     
     pet = pets.get_pet(pet_id)
+    if not pet:
+        abort(404)
     if pet["user_id"] != session["user_id"]:
         abort(403)
 
@@ -62,6 +77,8 @@ def update_pet():
 
     pet_id = request.form["pet_id"]
     pet = pets.get_pet(pet_id)
+    if not pet:
+        abort(404)
     if pet["user_id"] != session["user_id"]:
         abort(403)
 
@@ -81,6 +98,8 @@ def delete_pet(pet_id):
     require_login()
 
     pet = pets.get_pet(pet_id)
+    if not pet:
+        abort(404)
     if pet["user_id"] != session["user_id"]:
         abort(403)
 
