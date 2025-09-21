@@ -1,11 +1,11 @@
 import db
 
 def get_all_pets():
-    sql = """SELECT p.id, p.name, p.breed, p.birth_year, p.posted_at, u.location
+    sql = """SELECT p.id, p.name, p.breed, p.birth_year, u.location
             FROM pets p, users u
             WHERE u.id = p.user_id
             GROUP BY p.id
-            ORDER BY p.posted_at DESC"""
+            ORDER BY p.id DESC"""
     return db.query(sql)
 
 def add_pet(name, birth_year, pet_type, breed, gender, size, description, user_id):
@@ -46,3 +46,12 @@ def update_pet(pet_id, name, birth_year, pet_type, breed, gender, size, descript
 def delete_pet(pet_id):
     sql = """DELETE FROM pets WHERE id = ?"""
     db.execute(sql, [pet_id])
+
+def search(query):
+    sql = """SELECT p.id, p.name, p.breed, u.location
+            FROM pets p, users u
+            WHERE p.user_id = u.id AND
+            (p.name LIKE ? OR p.description LIKE ? OR p.breed LIKE ?)
+            ORDER BY p.id DESC"""
+    like = "%" + query + "%"
+    return db.query(sql, [like, like, like])

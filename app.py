@@ -32,7 +32,7 @@ def add_pet():
     if not name or len(name) > 50:
         abort(403)
     birth_year = request.form["birth_year"]
-    if not birth_year or not isinstance(birth_year, int):
+    if not birth_year or len(birth_year) > 4:
         abort(403)
     breed = request.form["breed"]
     if not breed or len(breed) > 50:
@@ -51,6 +51,16 @@ def add_pet():
         abort(403)
     pet_id = db.last_insert_id()
     return redirect("/pet/" + str(pet_id))
+
+@app.route("/search")
+def search():
+    query = request.args.get("query")
+    if query:
+        results = pets.search(query)
+    else:
+        query = ""
+        results = []
+    return render_template("/search.html", query=query, results=results)
 
 @app.route("/pet/<int:pet_id>")
 def show_pet(pet_id):

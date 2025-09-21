@@ -39,12 +39,15 @@
   {% endif %}
 
   <h2>Find a pet for adoption</h2>
+  <p>
+    <a href="/search">Search with a keyword</a>
+  </p>
   {% for listing in listings %}
   <p>
     <b>{{listing.name}}</b><br />
     <i>{{listing.breed}}</i><br />
     Born in {{listing.birth_year}}<br />
-    Currently located at {{listing.location}}<br />
+    Living in {{listing.location}}<br />
     Read more about <a href="pet/{{ listing.id }}">{{listing.name}}</a>
   </p>
   <hr />

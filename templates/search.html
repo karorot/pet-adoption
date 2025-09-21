@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <title>Search</title>
+</head>
+
+<body>
+  <h2>Search</h2>
+  <form action="/search" method="get">
+    <p>
+      <label for="query">Keyword(s)</label>:
+      <input type="text" name="query" id="query" value="{{ query }}" />
+    </p>
+    <input type="submit" value="Search" />
+  </form>
+
+  {% if query %}
+  <h3>Search results</h3>
+  {% if results|length > 0 %}
+  <ul>
+    {% for pet in results %}
+    <li><a href="/pet/{{ pet.id }}">{{ pet.name }}</a>: {{ pet.breed}} in {{ pet.location }}</li>
+    <hr />
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p>
+    No results. Try another keyword.
+  </p>
+  {% endif %}
+  {% endif %}
+  <p>
+    <a href="/">View all listings</a>
+  </p>
+</body>
+
+</html>
