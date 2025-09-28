@@ -35,6 +35,11 @@
     </p>
     <input type="submit" value="Create an account" />
   </form>
+  {% for message in get_flashed_messages() %}
+  <p>
+    <b>{{ message }}</b>
+  </p>
+  {% endfor %}
   <p>
     Already have an account? <a href="/">Log in</a>
   </p>

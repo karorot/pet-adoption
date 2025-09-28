@@ -8,6 +8,11 @@
 
 <body>
   <h1>Rehome a pet</h1>
+  {% for message in get_flashed_messages() %}
+  <p>
+    <b>{{ message }}</b>
+  </p>
+  {% endfor %}
   {% if session.username %}
   <p>
     You're logged in as {{ session.username }}
