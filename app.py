@@ -129,30 +129,33 @@ def delete_pet(pet_id):
         else:
             return redirect("/pet/" + str(pet_id))
 
-@app.route("/register")
+@app.route("/register", methods=["GET", "POST"])
 def register():
-    return render_template("register.html")
+    if request.method == "GET":
+        return render_template("register.html", filled={})
 
-@app.route("/create_user", methods=["POST"])
-def create_user():
-    username = request.form["username"]
-    password1 = request.form["password1"]
-    password2 = request.form["password2"]
-    first_name = request.form["first_name"]
-    last_name = request.form["last_name"]
-    location = request.form["location"]
-    if password1 != password2:
-        flash("The passwords don't match.")
-        return redirect("/register")
+    if request.method == "POST":
+        username = request.form["username"]
+        if len(username) > 16:
+            forbidden()
+        password1 = request.form["password1"]
+        password2 = request.form["password2"]
+        location = request.form["location"]
 
-    try:
-        users.create_user(username, password1, first_name, last_name, location)
-    except sqlite3.IntegrityError:
-        flash("The username is already taken.")
-        return redirect("/register")
-    
-    flash("Account created! Please login.")
-    return redirect("/")
+        if password1 != password2:
+            flash("The passwords don't match.")
+            filled = {"username" : username, "location" : location}
+            return render_template("register.html", filled=filled)
+
+        try:
+            users.create_user(username, password1, location)
+        except sqlite3.IntegrityError:
+            flash("The username is already taken.")
+            filled = {"username" : username, "location" : location}
+            return render_template("register.html", filled=filled)
+        
+        flash("Account created!")
+        return redirect("/")
 
 @app.route("/user/<int:user_id>")
 def show_user(user_id):

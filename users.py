@@ -2,15 +2,13 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 import db
 
-def create_user(username, password, first_name, last_name, location):
+def create_user(username, password, location):
     password_hash = generate_password_hash(password)
     sql = """INSERT INTO users (username,
                                 password_hash, 
-                                first_name, 
-                                last_name, 
                                 location) 
-            VALUES (?, ?, ?, ?, ?)"""
-    db.execute(sql, [username, password_hash, first_name, last_name, location])
+            VALUES (?, ?, ?)"""
+    db.execute(sql, [username, password_hash, location])
 
 def get_user(user_id):
     sql = """SELECT id, username, location FROM users WHERE id = ?"""
