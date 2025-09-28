@@ -151,6 +151,14 @@ def create_user():
     
     return "Account created!<br /><a href='/'>Log in</a>"
 
+@app.route("/user/<int:user_id>")
+def show_user(user_id):
+    user = users.get_user(user_id)
+    if not user:
+        not_found()
+    pets = users.get_pets(user_id)
+    return render_template("user.html", user=user, pets=pets)
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":

@@ -21,7 +21,7 @@
     {{ pet.description }}
   </p>
   <p>
-    Owner: {{ pet.owner }}
+    Owner: <a href="/user/{{ pet.user_id}}">{{ pet.owner }}</a>
   </p>
   <hr />
   {% if session.user_id == pet.user_id %}

@@ -12,6 +12,21 @@ def create_user(username, password, first_name, last_name, location):
             VALUES (?, ?, ?, ?, ?)"""
     db.execute(sql, [username, password_hash, first_name, last_name, location])
 
+def get_user(user_id):
+    sql = """SELECT id, username, location FROM users WHERE id = ?"""
+    result = db.query(sql, [user_id])
+    return result[0] if result else None
+
+def get_pets(user_id):
+    sql = """SELECT p.id,
+                    p.name,
+                    p.birth_year,
+                    p.breed
+            FROM pets p, users u
+            WHERE p.user_id = u.id AND
+                    u.id = ?"""
+    return db.query(sql, [user_id])
+
 def check_login(username, password):
     sql = """SELECT id, password_hash FROM users WHERE username = ?"""
     result = db.query(sql, [username])

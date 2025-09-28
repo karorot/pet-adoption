@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <title>Profile</title>
+</head>
+
+<body>
+  <h1>Profile: {{ user.username }}</h1>
+  <p>Located in {{ user. location }}</p>
+  <p>{{ pets | count }} listing(s) added</p>
+  {% if pets %}
+  <h3>Pets listed for adoption</h3>
+  <ul>
+    {% for pet in pets %}
+    <li>
+      <a href="/pet/{{ pet.id }}">{{ pet.name }}</a>: {{ pet. breed }}, born in {{ pet.birth_year }}
+    </li>
+    {% endfor %}
+  {% endif %}
+  </ul>
+  {% if session.user_id == user.id %}
+  <h3>Need to rehome a pet?</h3>
+  <p>Create a profile for your pet by <a href="/new_pet">filling the form</a>.</p>
+  {% endif %}
+  <p>
+    <a href="/">Return to all listings</a>
+  </p>
+</body>
+
+</html>

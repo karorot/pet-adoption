@@ -12,9 +12,10 @@
   <p>
     You're logged in as {{ session.username }}
   </p>
-  <p>
-    <a href="/logout">Log out</a>
-  </p>
+  <ul>
+    <li>View your <a href="/user/{{ session.user_id }}">profile</a></li>
+    <li><a href="/logout">Log out</a></li>
+  </ul>
 
   <h2>List a pet for a new home</h2>
   Create a profile for your pet: <a href="/new_pet">Fill the form</a>.
