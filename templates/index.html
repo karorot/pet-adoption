@@ -45,9 +45,7 @@
   {% endif %}
 
   <h2>Find a pet for adoption</h2>
-  <p>
-    <a href="/search">Search with a keyword</a>
-  </p>
+  {% if listings %}
   {% for listing in listings %}
   <p>
     <b>{{listing.name}}</b><br />
@@ -58,7 +56,12 @@
   </p>
   <hr />
   {% endfor %}
-
+  {% else %}
+  No pets currently looking for a new home.
+  {% endif %}
+  <p>
+    <a href="/search">Search with a keyword</a>
+  </p>
 </body>
 
 </html>
