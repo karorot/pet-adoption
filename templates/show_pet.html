@@ -27,7 +27,7 @@
     </ul>
   </p>
   <p>
-    {{ pet.description }}
+    {{ pet.description | show_newlines }}
   </p>
   <p>
     Owner: <a href="/user/{{ pet.user_id}}">{{ pet.owner }}</a>

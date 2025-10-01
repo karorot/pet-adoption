@@ -1,6 +1,7 @@
 import sqlite3
 from flask import Flask
 from flask import redirect, render_template, request, session, abort, flash, make_response
+import markupsafe
 
 import db
 import config
@@ -19,6 +20,12 @@ def not_found():
 def require_login():
     if "user_id" not in session:
         forbidden()
+
+@app.template_filter()
+def show_newlines(content):
+    content = str(markupsafe.escape(content))
+    content = content.replace("\n", "<br />")
+    return markupsafe.Markup(content)
 
 @app.route("/")
 def index():
