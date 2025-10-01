@@ -1,6 +1,6 @@
 import sqlite3
 from flask import Flask
-from flask import redirect, render_template, request, session, abort, flash
+from flask import redirect, render_template, request, session, abort, flash, make_response
 
 import db
 import config
@@ -68,13 +68,6 @@ def search():
         results = []
     return render_template("/search.html", query=query, results=results)
 
-@app.route("/pet/<int:pet_id>")
-def show_pet(pet_id):
-    pet = pets.get_pet(pet_id)
-    if not pet:
-        not_found()
-    return render_template("show_pet.html", pet=pet)
-
 @app.route("/edit_pet/<int:pet_id>")
 def edit_pet(pet_id):
     require_login()
@@ -128,6 +121,82 @@ def delete_pet(pet_id):
             return redirect("/")
         else:
             return redirect("/pet/" + str(pet_id))
+
+@app.route("/pet/<int:pet_id>")
+def show_pet(pet_id):
+    pet = pets.get_pet(pet_id)
+    if not pet:
+        not_found()
+    images = pets.get_all_images(pet_id)
+    return render_template("show_pet.html", pet=pet, images=images)
+
+@app.route("/image/<int:image_id>")
+def show_image(image_id):
+    image = pets.get_image(image_id)
+    if not image:
+        not_found()
+    
+    response = make_response(bytes(image))
+    response.headers.set("Content-Type", "image")
+    return response
+
+@app.route("/images/<int:pet_id>")
+def images(pet_id):
+    require_login()
+    pet = pets.get_pet(pet_id)
+    if not pet:
+        not_found()
+    if pet["user_id"] != session["user_id"]:
+        forbidden()
+
+    images = pets.get_all_images(pet_id)
+    return render_template("images.html", pet=pet, images=images)
+        
+@app.route("/add_images", methods=["GET", "POST"])
+def add_images():
+    require_login()
+
+    if request.method == "GET":
+        return render_template("images.html")
+    
+    if request.method == "POST":
+        pet_id = request.form["pet_id"]
+        pet = pets.get_pet(pet_id)
+        if not pet:
+            not_found()
+        if pet["user_id"] != session["user_id"]:
+            forbidden()
+
+        files = request.files.getlist("images")
+        for file in files:
+            if not file.filename.endswith(".jpg") and not file.filename.endswith(".png"):
+                flash("Wrong file type")
+                return redirect("/images/" + str(pet_id))
+            
+            image = file.read()
+            if len(image) > 100 * 1024:
+                flash("Image size is too large")
+                return redirect("/images/" + str(pet_id))
+            
+            pets.add_image(pet_id, image)
+        return redirect("/images/" + str(pet_id))
+
+@app.route("/delete_images", methods=["POST"])
+def delete_images():
+    require_login()
+    
+    pet_id = request.form["pet_id"]
+    pet = pets.get_pet(pet_id)
+    if not pet:
+        not_found()
+    if pet["user_id"] != session["user_id"]:
+        forbidden()
+    
+    for image_id in request.form.getlist("image_id"):
+        pets.delete_images(pet_id, image_id)
+
+    print("Kuvat deletoitu")
+    return redirect("/images/" + str(pet_id))
 
 @app.route("/register", methods=["GET", "POST"])
 def register():

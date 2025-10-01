@@ -55,3 +55,20 @@ def search(query):
             ORDER BY p.id DESC"""
     like = "%" + query + "%"
     return db.query(sql, [like, like, like])
+
+def get_all_images(pet_id):
+    sql = """SELECT id FROM images WHERE pet_id = ?"""
+    return db.query(sql, [pet_id])
+
+def get_image(image_id):
+    sql = """SELECT image FROM images WHERE id = ?"""
+    result = db.query(sql, [image_id])
+    return result[0][0] if result else None
+
+def add_image(pet_id, image):
+    sql = """INSERT INTO images (pet_id, image) VALUES (?, ?)"""
+    db.execute(sql, [pet_id, image])
+
+def delete_images(pet_id, image_id):
+    sql = """DELETE FROM images WHERE id = ? AND pet_id = ?"""
+    db.execute(sql, [image_id, pet_id])

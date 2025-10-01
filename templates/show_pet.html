@@ -7,7 +7,16 @@
 </head>
 
 <body>
-  <h3>{{ pet.name }}</h3>
+  <p>
+    {% if images %}
+    {% for image in images %}
+    <img src="/image/{{ image.id }}" alt="Image of the pet" />
+    {% endfor %}
+    {% else %}
+    No images added yet for this pet.
+    {% endif %}
+  </p>
+  <h2>{{ pet.name }}</h2>
   <p>
     <ul>
       <li>{{ pet.breed }}</li>
@@ -29,7 +38,7 @@
     <ul>
       <li><a href="/edit_pet/{{ pet.id }}">Update this listing</a></li>
       <li><a href="/delete_pet/{{ pet.id }}">Delete this listing</a></li>
-      <li>Modify pictures</li>
+      <li><a href="/images/{{ pet.id }}">Add or delete images</a></li>
     </ul>
   </p>
   {% elif session.user_id %}

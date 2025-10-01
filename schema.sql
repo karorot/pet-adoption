@@ -17,3 +17,9 @@ CREATE TABLE pets (
     user_id INTEGER REFERENCES users,
     posted_at TEXT
 );
+
+CREATE TABLE images (
+    id INTEGER PRIMARY KEY,
+    pet_id INTEGER REFERENCES pets,
+    image BLOB
+);
