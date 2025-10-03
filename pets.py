@@ -75,6 +75,11 @@ def delete_pet(pet_id):
     sql = """DELETE FROM pets WHERE id = ?"""
     db.execute(sql, [pet_id])
 
+def add_application(pet_id, user_id, description):
+    sql = """INSERT INTO applications (pet_id, user_id, description) 
+            VALUES (?, ?, ?)"""
+    db.execute(sql, [pet_id, user_id, description])
+
 def search(query):
     sql = """SELECT p.id, p.name, p.breed, u.location
             FROM pets p, users u

@@ -31,6 +31,13 @@ CREATE TABLE pet_classes (
     value TEXT
 );
 
+CREATE TABLE applications (
+    id INTEGER PRIMARY KEY,
+    pet_id REFERENCES pets,
+    user_id REFERENCES users,
+    description TEXT
+);
+
 CREATE TABLE images (
     id INTEGER PRIMARY KEY,
     pet_id INTEGER REFERENCES pets,

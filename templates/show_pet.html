@@ -47,7 +47,7 @@
   {% elif session.user_id %}
   <p>
     Would you like to adopt {{ pet.name }}? <br />
-    Fill in the form to apply
+    <a href="/adopt_pet/{{ pet.id }}">Fill in the form to apply</a>
   </p>
   {% else %}
   <p>

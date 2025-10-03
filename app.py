@@ -237,6 +237,37 @@ def delete_images():
     print("Kuvat deletoitu")
     return redirect("/images/" + str(pet_id))
 
+@app.route("/adopt_pet/<int:pet_id>")
+def adopt_pet(pet_id):
+    require_login()
+    
+    pet = pets.get_pet(pet_id)
+    if not pet:
+        not_found()
+    if pet["user_id"] == session["user_id"]:
+        forbidden()
+    return render_template("/adopt_pet.html", pet=pet)
+
+@app.route("/add_application", methods=["POST"])
+def add_application():
+    require_login()
+
+    pet_id = request.form["pet_id"]
+    pet = pets.get_pet(pet_id)
+    if not pet:
+        not_found()
+    if pet["user_id"] == session["user_id"]:
+        forbidden()
+
+    description = request.form["description"]
+    if not description or len(description) > 1000:
+        forbidden()
+
+    user_id = session["user_id"]
+    pets.add_application(pet_id, user_id, description)
+
+    return redirect("/pet/" + str(pet_id))
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "GET":
