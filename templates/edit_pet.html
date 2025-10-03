@@ -19,37 +19,23 @@
       <input type="number" step="1" name="birth_year" value="{{ pet.birth_year }}" id="birth_year" required />
     </p>
     <input type="hidden" name="pet_id" value="{{ pet.id }}" />
+    {% for class in all_classes %}
     <p>
-      <!--To do: Use classes here for pet type-->
-      <label for="pet_type">Type of pet:</label><br/>
-      <select name="pet_type" id="pet_type">
-        <option value="dog">Dog</option>
-        <option value="cat">Cat</option>
-        <option value="other">Other</option>
+      <label for="class_{{ class }}">{{ class }}</label>:<br />
+      <select name="classes" id="class_{{ class }}" required>
+        {% for option in all_classes[class] %}
+          {% if pet_classes[class] == option %}
+          <option value="{{ class }}:{{ option }}" selected>{{ option }}</option>
+          {% else %}
+          <option value="{{ class }}:{{ option }}">{{ option }}</option>
+          {% endif %}
+        {% endfor %}
       </select>
     </p>
+    {% endfor %}
     <p>
       <label for="breed">Breed:</label><br />
       <input type="text" name="breed" id="breed" value="{{ pet.breed }}" maxlength="50" required />
-    </p>
-    <p>
-      <!--To do: Use classes here for gender-->
-      <label for="size">Gender:</label><br />
-      <select name="gender" id="gender">
-        <option value="">(valitse)</option>
-        <option value="Male">Male</option>
-        <option value="Female">Female</option>
-      </select>
-    </p>
-    <p>
-      <!--To do: Use classes here for pet size-->
-      <label for="size">Size:</label><br />
-      <select name="size" id="size">
-        <option value="">(valitse)</option>
-        <option value="Small">Small</option>
-        <option value="Medium">Medium</option>
-        <option value="Large">Large</option>
-      </select>
     </p>
     <p>
       <label for="description">Description:</label><br />

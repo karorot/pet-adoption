@@ -1,5 +1,22 @@
 import db
 
+def get_all_classes():
+    sql = """SELECT title, value FROM classes ORDER BY id"""
+    result = db.query(sql)
+
+    classes = {}
+
+    # voisiko optimoida?
+    for title, value in result:
+        classes[title] = []
+    for title, value in result:
+        classes[title].append(value)
+    return classes
+
+def get_classes(pet_id):
+    sql = """SELECT title, value FROM pet_classes WHERE pet_id = ?"""
+    return db.query(sql, [pet_id])
+
 def get_all_pets():
     sql = """SELECT p.id, p.name, p.breed, p.birth_year, u.location
             FROM pets p, users u
@@ -8,43 +25,52 @@ def get_all_pets():
             ORDER BY p.id DESC"""
     return db.query(sql)
 
-def add_pet(name, birth_year, pet_type, breed, gender, size, description, user_id):
-    sql = """INSERT INTO pets (name, birth_year, pet_type, breed, gender, size, description, user_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)"""
-    db.execute(sql, [name, birth_year, pet_type, breed, gender, size, description, user_id])
+def add_pet(name, birth_year, breed, description, user_id, classes):
+    sql = """INSERT INTO pets (name, birth_year, breed, description, user_id)
+            VALUES (?, ?, ?, ?, ?)"""
+    db.execute(sql, [name, birth_year, breed, description, user_id])
+
+    pet_id = db.last_insert_id()
+
+    sql = """INSERT INTO pet_classes (pet_id, title, value) VALUES (?, ?, ?)"""
+    for title, value in classes:
+        db.execute(sql, [pet_id, title, value])
+    return pet_id
 
 def get_pet(pet_id):
     sql = """SELECT p.id,
                     p.name,
                     p.birth_year,
-                    p.pet_type,
                     p.breed,
-                    p.gender,
-                    p.size,
                     p.description,
                     u.location,
                     u.id user_id,
                     u.username owner
             FROM pets p, users u
             WHERE p.user_id = u.id AND
-                    p.id = ?"""
+                p.id = ?"""
     result = db.query(sql, [pet_id])
     return result[0] if result else None
 
-def update_pet(pet_id, name, birth_year, pet_type, breed, gender, size, description):
-    sql = """UPDATE pets
-            SET name = ?, 
-                birth_year = ?, 
-                pet_type = ?, 
-                breed = ?, 
-                gender = ?,
-                size = ?,
-                description = ?
-            WHERE id = ?"""
-    db.execute(sql, [name, birth_year, pet_type, breed, gender, size, description, pet_id])
+def update_pet(pet_id, name, birth_year, breed, description, classes):
+    sql = """UPDATE pets SET name = ?,
+                            birth_year = ?,
+                            breed = ?,
+                            description = ?
+                        WHERE id = ?"""
+    db.execute(sql, [name, birth_year, breed, description, pet_id])
+    
+    sql = """DELETE FROM pet_classes WHERE pet_id = ?"""
+    db.execute(sql, [pet_id])
+    
+    sql = """INSERT INTO pet_classes (pet_id, title, value) VALUES (?, ?, ?)"""
+    for title, value in classes:
+        db.execute(sql, [pet_id, title, value])
 
 def delete_pet(pet_id):
     sql = """DELETE FROM images WHERE pet_id = ?"""
+    db.execute(sql, [pet_id])
+    sql = """DELETE FROM pet_classes WHERE pet_id = ?"""
     db.execute(sql, [pet_id])
     sql = """DELETE FROM pets WHERE id = ?"""
     db.execute(sql, [pet_id])

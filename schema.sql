@@ -18,6 +18,19 @@ CREATE TABLE pets (
     posted_at TEXT
 );
 
+CREATE TABLE classes (
+    id INTEGER PRIMARY KEY,
+    title TEXT,
+    value TEXT
+);
+
+CREATE TABLE pet_classes (
+    id INTEGER PRIMARY KEY,
+    pet_id INTEGER REFERENCES pets,
+    title TEXT,
+    value TEXT
+);
+
 CREATE TABLE images (
     id INTEGER PRIMARY KEY,
     pet_id INTEGER REFERENCES pets,

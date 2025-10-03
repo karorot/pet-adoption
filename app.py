@@ -35,7 +35,8 @@ def index():
 @app.route("/new_pet")
 def new_pet():
     require_login()
-    return render_template("new_pet.html")
+    classes = pets.get_all_classes()
+    return render_template("new_pet.html", classes=classes)
 
 @app.route("/add_pet", methods=["POST"])
 def add_pet():
@@ -50,19 +51,28 @@ def add_pet():
     breed = request.form["breed"]
     if not breed or len(breed) > 50:
         forbidden()
-    pet_type = request.form["pet_type"]
-    gender = request.form["gender"]
-    size = request.form["size"]
     description = request.form["description"]
     if not description or len(description) > 1000:
         forbidden()
+    
+    all_classes = pets.get_all_classes()
+
+    classes = []
+    for option in request.form.getlist("classes"):
+        if option:
+            title, value = option.split(":")
+            if title not in all_classes:
+                forbidden()
+            if value not in all_classes[title]:
+                forbidden()
+            classes.append((title, value))
+
     user_id = session["user_id"]
 
     try:
-        pets.add_pet(name, birth_year, pet_type, breed, gender, size, description, user_id)
+        pet_id = pets.add_pet(name, birth_year, breed, description, user_id, classes)
     except sqlite3.IntegrityError:
         forbidden()
-    pet_id = db.last_insert_id()
     return redirect("/pet/" + str(pet_id))
 
 @app.route("/search")
@@ -85,7 +95,12 @@ def edit_pet(pet_id):
     if pet["user_id"] != session["user_id"]:
         forbidden()
 
-    return render_template("edit_pet.html", pet=pet)
+    all_classes = pets.get_all_classes()
+    pet_classes = {}
+    for entry in pets.get_classes(pet_id):
+        pet_classes[entry["title"]] = entry["value"]
+
+    return render_template("edit_pet.html", pet=pet, all_classes=all_classes, pet_classes=pet_classes)
 
 @app.route("/update_pet", methods=["POST"])
 def update_pet():
@@ -99,14 +114,30 @@ def update_pet():
         forbidden()
 
     name = request.form["name"]
+    if not name or len(name) > 50:
+        forbidden()
     birth_year = request.form["birth_year"]
-    pet_type = request.form["pet_type"]
+    if not birth_year or len(birth_year) > 4:
+        forbidden()
     breed = request.form["breed"]
-    gender = request.form["gender"]
-    size = request.form["size"]
+    if not breed or len(breed) > 50:
+        forbidden()
     description = request.form["description"]
+    if not description or len(description) > 1000:
+        forbidden()
+    
+    all_classes = pets.get_all_classes()
+    classes = []
+    for entry in request.form.getlist("classes"):
+        if entry:
+            title, value = entry.split(":")
+            if title not in all_classes:
+                forbidden()
+            if value not in all_classes[title]:
+                forbidden()
+            classes.append((title, value))
 
-    pets.update_pet(pet_id, name, birth_year, pet_type, breed, gender, size, description)
+    pets.update_pet(pet_id, name, birth_year, breed, description, classes)
     return redirect("/pet/" + str(pet_id))
 
 @app.route("/delete_pet/<int:pet_id>", methods=["GET", "POST"])
@@ -135,7 +166,8 @@ def show_pet(pet_id):
     if not pet:
         not_found()
     images = pets.get_all_images(pet_id)
-    return render_template("show_pet.html", pet=pet, images=images)
+    classes = pets.get_classes(pet_id)
+    return render_template("show_pet.html", pet=pet, images=images, classes=classes)
 
 @app.route("/image/<int:image_id>")
 def show_image(image_id):

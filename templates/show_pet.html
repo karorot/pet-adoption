@@ -19,11 +19,14 @@
   <h2>{{ pet.name }}</h2>
   <p>
     <ul>
-      <li>{{ pet.breed }}</li>
-      <li>{{ pet.size }}</li>
-      <li>{{ pet.gender }}</li>
-      <li>Born in {{ pet.birth_year}}</li>
-      <li>Lives in {{ pet.location }}</li>
+      <li>Breed: {{ pet.breed }}</li>
+      {% if classes %}
+      {% for class in classes %}
+      <li>{{ class.title }}: {{ class.value }}</li>
+      {% endfor %}
+      {% endif %}
+      <li>Born in: {{ pet.birth_year}}</li>
+      <li>Lives in: {{ pet.location }}</li>
     </ul>
   </p>
   <p>

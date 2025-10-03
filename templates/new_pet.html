@@ -19,38 +19,20 @@
       <label for="birth_year">Year of birth:</label><br />
       <input type="number" step="1" name="birth_year" id="birth_year" required />
     </p>
+    {% for class in classes %}
     <p>
-      <!--To do: Add classes here for pet type-->
-      <label for="pet_type">Type of pet:</label><br/>
-      <select name="pet_type" id="pet_type">
-        <option value="">(valitse)</option>
-        <option value="dog">Dog</option>
-        <option value="cat">Cat</option>
-        <option value="other">Other</option>
+      <label for="class_{{ class }}">{{ class }}</label>:<br />
+      <select name="classes" id="class_{{ class }}" required>
+        <option value="">(select)</option>
+        {% for option in classes[class] %}
+        <option value="{{ class  }}:{{ option }}">{{ option }}</option>
+        {% endfor %}
       </select>
     </p>
+    {% endfor %}
     <p>
       <label for="breed">Breed:</label><br />
       <input type="text" name="breed" id="breed" maxlength="50" required />
-    </p>
-    <p>
-      <!--To do: Add classes here for gender-->
-      <label for="size">Gender:</label><br />
-      <select name="gender" id="gender">
-        <option value="">(valitse)</option>
-        <option value="Male">Male</option>
-        <option value="Female">Female</option>
-      </select>
-    </p>
-    <p>
-      <!--To do: Add classes here for pet size-->
-      <label for="size">Size:</label><br />
-      <select name="size" id="size">
-        <option value="">(valitse)</option>
-        <option value="Small">Small</option>
-        <option value="Medium">Medium</option>
-        <option value="Large">Large</option>
-      </select>
     </p>
     <p>
       <label for="description">Description:</label><br />
