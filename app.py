@@ -234,7 +234,6 @@ def delete_images():
     for image_id in request.form.getlist("image_id"):
         pets.delete_images(pet_id, image_id)
 
-    print("Kuvat deletoitu")
     return redirect("/images/" + str(pet_id))
 
 @app.route("/adopt_pet/<int:pet_id>")
