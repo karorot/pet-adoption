@@ -17,6 +17,7 @@
         <br />
         {% endfor %}
         <input type="hidden" name="pet_id" value="{{ pet.id }}" />
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
         <input type="submit" value="Delete selected images" />
       </p>
       </form>
@@ -32,6 +33,7 @@
         <input type="file" name="images" id="images" accept=".png, .jpg" multiple />
       </p>
       <input type="hidden" name="pet_id" value="{{ pet.id }}" />
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
       <input type="submit" value="Upload" />
     </form>
     {% for message in get_flashed_messages() %}

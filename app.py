@@ -1,3 +1,4 @@
+import secrets
 import sqlite3
 from flask import Flask
 from flask import redirect, render_template, request, session, abort, flash, make_response
@@ -21,6 +22,12 @@ def require_login():
     if "user_id" not in session:
         forbidden()
 
+def check_csrf():
+    if "csrf_token" not in request.form:
+        forbidden()
+    if request.form["csrf_token"] != session["csrf_token"]:
+        forbidden()
+
 @app.template_filter()
 def show_newlines(content):
     content = str(markupsafe.escape(content))
@@ -41,6 +48,7 @@ def new_pet():
 @app.route("/add_pet", methods=["POST"])
 def add_pet():
     require_login()
+    check_csrf()
 
     name = request.form["name"]
     if not name or len(name) > 50:
@@ -123,6 +131,7 @@ def edit_pet(pet_id):
 @app.route("/update_pet", methods=["POST"])
 def update_pet():
     require_login()
+    check_csrf()
 
     pet_id = request.form["pet_id"]
     pet = pets.get_pet(pet_id)
@@ -172,6 +181,7 @@ def delete_pet(pet_id):
         return render_template("delete_pet.html", pet=pet)
     
     if request.method == "POST":
+        check_csrf()
         if "delete" in request.form:
             pets.delete_pet(pet_id)
             return redirect("/")
@@ -203,6 +213,7 @@ def images(pet_id):
 @app.route("/add_images", methods=["GET", "POST"])
 def add_images():
     require_login()
+    check_csrf()
 
     if request.method == "GET":
         return render_template("images.html")
@@ -232,6 +243,7 @@ def add_images():
 @app.route("/delete_images", methods=["POST"])
 def delete_images():
     require_login()
+    check_csrf()
     
     pet_id = request.form["pet_id"]
     pet = pets.get_pet(pet_id)
@@ -259,6 +271,7 @@ def adopt_pet(pet_id):
 @app.route("/add_application", methods=["POST"])
 def add_application():
     require_login()
+    check_csrf()
 
     pet_id = request.form["pet_id"]
     pet = pets.get_pet(pet_id)
@@ -331,7 +344,7 @@ def show_user(user_id):
 def login():
     if request.method == "GET":
         return render_template("index.html")
-    
+
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
@@ -340,6 +353,7 @@ def login():
         if user_id:
             session["user_id"] = user_id
             session["username"] = username
+            session["csrf_token"] = secrets.token_hex(16)
             return redirect("/")
         else:
             flash("Wrong username or password.")

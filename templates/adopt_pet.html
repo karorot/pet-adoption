@@ -15,6 +15,7 @@
             <textarea name="description" id="description" rows="8" cols="50" maxlength="1000" required></textarea>
         </p>
         <input type="hidden" name="pet_id" value="{{ pet.id }}" />
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
         <input type="submit" value="Apply" />
     </form>
 </body>

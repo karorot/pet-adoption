@@ -41,6 +41,7 @@
       <label for="description">Description:</label><br />
       <textarea name="description" rows="8" cols="50" maxlength="1000" required>{{ pet.description }}</textarea>
     </p>
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
     <input type="submit" value="Update listing" />
   </form>
   <p>
