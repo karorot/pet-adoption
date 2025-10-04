@@ -81,10 +81,17 @@ def show_pet(pet_id):
     if not pet:
         not_found()
     images = pets.get_all_images(pet_id)
-    applications = pets.get_all_applications(pet_id)
     classes = pets.get_classes(pet_id)
+    applications = pets.get_all_applications(pet_id)
+
+    my_application = False
+    for entry in applications:
+        if entry["user_id"] == session["user_id"]:
+            my_application = entry["id"]
+
     return render_template("show_pet.html", pet=pet, images=images,
-                           classes=classes, applications=applications)
+                           classes=classes, applications=applications,
+                           my_application=my_application)
 
 @app.route("/search")
 def search():
@@ -267,7 +274,8 @@ def add_application():
     user_id = session["user_id"]
     pets.add_application(pet_id, user_id, description)
 
-    return redirect("/pet/" + str(pet_id))
+    application_id = db.last_insert_id()
+    return redirect("/application/" + str(application_id))
 
 @app.route("/application/<int:application_id>")
 def show_application(application_id):
@@ -316,7 +324,8 @@ def show_user(user_id):
     if not user:
         not_found()
     pets = users.get_pets(user_id)
-    return render_template("user.html", user=user, pets=pets)
+    applications = users.get_applications(user_id)
+    return render_template("user.html", user=user, pets=pets, applications=applications)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():

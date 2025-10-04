@@ -24,6 +24,13 @@ def get_pets(user_id):
             GROUP BY a.pet_id"""
     return db.query(sql, [user_id])
 
+def get_applications(user_id):
+    sql = """SELECT a.id, a.sent_at, p.name pet_name, u.location pet_location
+            FROM applications a, pets p, users u
+            WHERE a.pet_id = p.id AND p.user_id = u.id AND
+                a.user_id = ?"""
+    return db.query(sql, [user_id])
+
 def check_login(username, password):
     sql = """SELECT id, password_hash FROM users WHERE username = ?"""
     result = db.query(sql, [username])

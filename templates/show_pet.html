@@ -54,8 +54,13 @@
   </p>
   {% elif session.user_id %}
   <p>
+    {% if my_application %}
+    You have sent an application for {{ pet.name }}!<br />
+    <a href="/application/{{ my_application }}">View your application</a>
+    {% else %}
     Would you like to adopt {{ pet.name }}? <br />
     <a href="/adopt_pet/{{ pet.id }}">Fill in the form to apply</a>
+    {% endif %}
   </p>
   {% else %}
   <p>
