@@ -91,11 +91,12 @@ def show_pet(pet_id):
     images = pets.get_all_images(pet_id)
     classes = pets.get_classes(pet_id)
     applications = pets.get_all_applications(pet_id)
-
     my_application = False
-    for entry in applications:
-        if entry["user_id"] == session["user_id"]:
-            my_application = entry["id"]
+
+    if "user_if" in session:
+        for entry in applications:
+            if entry["user_id"] == session["user_id"]:
+                my_application = entry["id"]
 
     return render_template("show_pet.html", pet=pet, images=images,
                            classes=classes, applications=applications,
