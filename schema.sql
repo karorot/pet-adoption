@@ -33,8 +33,8 @@ CREATE TABLE pet_classes (
 
 CREATE TABLE applications (
     id INTEGER PRIMARY KEY,
-    pet_id REFERENCES pets,
-    user_id REFERENCES users,
+    pet_id INTEGER REFERENCES pets,
+    user_id INTEGER REFERENCES users,
     description TEXT
 );
 

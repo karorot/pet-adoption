@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <title>Application</title>
+</head>
+
+<body>
+    <h2>Application for {{ application.pet_name }}</h2>
+    <p>
+      Sender: <a href="/user/{{ application.sender_id }}">{{ application.sender }}</a>
+    </p>
+    <h3>Application</h3>
+    <p>
+      {{ application.description | show_newlines }}
+    </p>
+    <p>
+      <a href="/pet/{{ application.pet_id }}">Return to {{ application.pet_name }}'s profile</a>
+    </p>
+    <p>
+      <a href="/">Return to all listings</a>
+    </p>
+</body>
+
+</html>

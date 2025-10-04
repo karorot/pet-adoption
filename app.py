@@ -75,6 +75,17 @@ def add_pet():
         forbidden()
     return redirect("/pet/" + str(pet_id))
 
+@app.route("/pet/<int:pet_id>")
+def show_pet(pet_id):
+    pet = pets.get_pet(pet_id)
+    if not pet:
+        not_found()
+    images = pets.get_all_images(pet_id)
+    applications = pets.get_all_applications(pet_id)
+    classes = pets.get_classes(pet_id)
+    return render_template("show_pet.html", pet=pet, images=images,
+                           classes=classes, applications=applications)
+
 @app.route("/search")
 def search():
     query = request.args.get("query")
@@ -159,15 +170,6 @@ def delete_pet(pet_id):
             return redirect("/")
         else:
             return redirect("/pet/" + str(pet_id))
-
-@app.route("/pet/<int:pet_id>")
-def show_pet(pet_id):
-    pet = pets.get_pet(pet_id)
-    if not pet:
-        not_found()
-    images = pets.get_all_images(pet_id)
-    classes = pets.get_classes(pet_id)
-    return render_template("show_pet.html", pet=pet, images=images, classes=classes)
 
 @app.route("/image/<int:image_id>")
 def show_image(image_id):
@@ -266,6 +268,19 @@ def add_application():
     pets.add_application(pet_id, user_id, description)
 
     return redirect("/pet/" + str(pet_id))
+
+@app.route("/application/<int:application_id>")
+def show_application(application_id):
+    require_login()
+
+    application = pets.get_application(application_id)
+    if not application:
+        not_found()
+    if application["sender_id"] != session["user_id"] and \
+          application["owner_id"] != session["user_id"]:
+        forbidden()
+
+    return render_template("/application.html", application=application)
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
