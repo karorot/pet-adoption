@@ -76,12 +76,12 @@ def delete_pet(pet_id):
     db.execute(sql, [pet_id])
 
 def add_application(pet_id, user_id, description):
-    sql = """INSERT INTO applications (pet_id, user_id, description)
-            VALUES (?, ?, ?)"""
+    sql = """INSERT INTO applications (pet_id, user_id, description, sent_at)
+            VALUES (?, ?, ?, datetime('now'))"""
     db.execute(sql, [pet_id, user_id, description])
 
 def get_all_applications(pet_id):
-    sql = """SELECT a.id, a.description, u.id user_id, u.username
+    sql = """SELECT a.id, a.description, a.sent_at, u.id user_id, u.username
             FROM applications a, users u
             WHERE a.pet_id = ? AND a.user_id = u.id"""
     return db.query(sql, [pet_id])
@@ -89,6 +89,7 @@ def get_all_applications(pet_id):
 def get_application(application_id):
     sql = """SELECT a.description,
                     a.user_id sender_id,
+                    a.sent_at,
                     u.username sender,
                     p.name pet_name,
                     p.id pet_id,

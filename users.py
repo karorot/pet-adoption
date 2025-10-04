@@ -21,7 +21,7 @@ def get_pets(user_id):
             FROM pets p LEFT JOIN applications a
             ON a.pet_id = p.id
             WHERE p.user_id = ?
-            GROUP BY a.id"""
+            GROUP BY a.pet_id"""
     return db.query(sql, [user_id])
 
 def check_login(username, password):

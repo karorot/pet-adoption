@@ -9,7 +9,8 @@
 <body>
     <h2>Application for {{ application.pet_name }}</h2>
     <p>
-      Sender: <a href="/user/{{ application.sender_id }}">{{ application.sender }}</a>
+      Sender: <a href="/user/{{ application.sender_id }}">{{ application.sender }}</a><br />
+      Sent at: {{ application.sent_at }}
     </p>
     <h3>Application</h3>
     <p>

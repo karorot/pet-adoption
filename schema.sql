@@ -35,7 +35,8 @@ CREATE TABLE applications (
     id INTEGER PRIMARY KEY,
     pet_id INTEGER REFERENCES pets,
     user_id INTEGER REFERENCES users,
-    description TEXT
+    description TEXT,
+    sent_at TEXT
 );
 
 CREATE TABLE images (

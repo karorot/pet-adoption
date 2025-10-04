@@ -38,10 +38,10 @@
   <hr />
   {% if session.user_id == pet.user_id %}
   <h3>Adoption applications for {{ pet.name }}</h3>
-  Applications received: {{ applications | count}}<br />
+  Applications received: {{ applications | count }}<br />
   <ul>
   {% for application in applications %}
-    <li><a href="/application/{{ application.id }}">{{ application.username }}</a></li>
+    <li>{{ application.username }}'s <a href="/application/{{ application.id }}">application</a> ({{ application.sent_at }})</li>
   {% endfor %}
   </ul>
   <hr />
