@@ -8,14 +8,17 @@
 
 <body>
   <h1>Profile: {{ user.username }}</h1>
-  <p>Located in {{ user. location }}</p>
+  <p>Located in {{ user.location }}</p>
   <p>{{ pets | count }} listing(s) added</p>
   {% if pets %}
   <h3>Pets listed for adoption</h3>
   <ul>
     {% for pet in pets %}
     <li>
-      <a href="/pet/{{ pet.id }}">{{ pet.name }}</a>: {{ pet. breed }}, born in {{ pet.birth_year }}
+      <a href="/pet/{{ pet.id }}">{{ pet.name }}</a>: {{ pet.breed }}, born in {{ pet.birth_year }}
+      {% if session.user_id == user.id %}
+      (Adoption applications: {{ pet.applied_count }})
+      {% endif %}
     </li>
     {% endfor %}
   {% endif %}
