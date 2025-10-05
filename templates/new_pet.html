@@ -17,7 +17,7 @@
     </p>
     <p>
       <label for="birth_year">Year of birth</label>:<br />
-      <input type="number" step="1" name="birth_year" id="birth_year" placeholder="2025" required />
+      <input type="text" name="birth_year" id="birth_year" pattern="(19|20)[0-9]{2}" placeholder="2025" required />
     </p>
     {% for class in classes %}
     <p>

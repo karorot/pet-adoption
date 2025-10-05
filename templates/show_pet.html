@@ -25,7 +25,11 @@
       <li>{{ class.title }}: {{ class.value }}</li>
       {% endfor %}
       {% endif %}
-      <li>Born in: {{ pet.birth_year}}</li>
+      {% if pet_age > 0 %}
+      <li>Age: {{ pet_age }} year(s) old</li>
+      {% else %}
+      <li>Age: Younger than 1 year old</li>
+      {% endif %}
       <li>Lives in: {{ pet.location }}</li>
     </ul>
   </p>
@@ -54,9 +58,9 @@
   </p>
   {% elif session.user_id %}
   <p>
-    {% if my_application %}
+    {% if applied %}
     You have sent an application for {{ pet.name }}!<br />
-    <a href="/application/{{ my_application }}">View your application</a>
+    <a href="/application/{{ applied }}">View your application</a>
     {% else %}
     Would you like to adopt {{ pet.name }}? <br />
     <a href="/adopt_pet/{{ pet.id }}">Fill in the form to apply</a>
