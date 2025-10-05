@@ -101,12 +101,16 @@ def get_application(application_id):
 
 def search(query):
     sql = """SELECT p.id, p.name, p.breed, u.location
-            FROM pets p, users u
+            FROM pets p, users u, pet_classes c
             WHERE p.user_id = u.id AND
-            (p.name LIKE ? OR p.description LIKE ? OR p.breed LIKE ?)
+                p.id = c.pet_id AND
+                (p.name LIKE ? OR p.description LIKE ? OR
+                p.breed LIKE ? OR u.location LIKE ? OR
+                c.value LIKE ?)
+            GROUP BY p.id
             ORDER BY p.id DESC"""
     like = "%" + query + "%"
-    return db.query(sql, [like, like, like])
+    return db.query(sql, [like, like, like, like, like])
 
 def get_all_images(pet_id):
     sql = """SELECT id FROM images WHERE pet_id = ?"""
