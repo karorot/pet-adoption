@@ -10,20 +10,20 @@
   <h2>Create an account</h2>
   <form action="/register" method="post">
     <p>
-      <label for="username">Username:</label><br />
+      <label for="username">Username</label>:<br />
       <input type="text" name="username" id="username" value="{{ filled.username }}" maxlength="16"  required />
     </p>
     <p>
-      <label for="password1">Password:</label><br />
+      <label for="password1">Password</label>:<br />
       <input type="password" name="password1" id="password1" required />
     </p>
     <p>
-      <label for="password2">Repeat password:</label><br />
+      <label for="password2">Repeat password</label>:<br />
       <input type="password" name="password2" id="password2" required />
     </p>
     <p>
-      <label for="location">Location (city, country)</label><br />
-      <input type="text" name="location" id="location" value="{{ filled.location }}" required />
+      <label for="location">Location</label>:<br />
+      <input type="text" name="location" id="location" value="{{ filled.location }}" placeholder="City, Country" required />
     </p>
     <input type="submit" value="Create an account" />
   </form>
