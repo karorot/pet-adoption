@@ -1,23 +1,17 @@
-<!DOCTYPE html>
+{% extends "layout.html" %}
 
-<html>
+{% block title %}Adopt{% endblock %}
 
-<head>
-    <title>Send application</title>
-</head>
-
-<body>
-    <h2>Offer a home to {{ pet.name }}</h2>
-    <p>Describe your living situation and why you would like to adopt this pet.</p>
-    <form action="/add_application" method="post">
-        <p>
-            <label for="description">Application</label>: <br />
-            <textarea name="description" id="description" rows="8" cols="50" maxlength="1000" required></textarea>
-        </p>
-        <input type="hidden" name="pet_id" value="{{ pet.id }}" />
-        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
-        <input type="submit" value="Apply" />
-    </form>
-</body>
-
-</html>
+{% block content %}
+<h2>Offer a home to {{ pet.name }}</h2>
+<p>Describe your living situation and why you would like to adopt this pet.</p>
+<form action="/add_application" method="post">
+    <p>
+        <label for="description">Application</label>: <br />
+        <textarea name="description" id="description" rows="8" cols="50" maxlength="1000" required></textarea>
+    </p>
+    <input type="hidden" name="pet_id" value="{{ pet.id }}" />
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
+    <input type="submit" value="Apply" />
+</form>
+{% endblock %}

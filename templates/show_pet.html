@@ -1,80 +1,70 @@
-<!DOCTYPE html>
+{% extends "layout.html" %}
 
-<html>
+{% block title %}{{ pet.name }}{% endblock %}
 
-<head>
-  <title>{{ pet.name }}</title>
-</head>
-
-<body>
-  <p>
-    {% if images %}
-    {% for image in images %}
-    <img src="/image/{{ image.id }}" alt="Image of the pet" />
-    {% endfor %}
-    {% else %}
-    No images added yet for this pet.
-    {% endif %}
-  </p>
-  <h2>{{ pet.name }}</h2>
-  <p>
-    <ul>
-      <li>Breed: {{ pet.breed }}</li>
-      {% if classes %}
-      {% for class in classes %}
-      <li>{{ class.title }}: {{ class.value }}</li>
-      {% endfor %}
-      {% endif %}
-      {% if pet_age > 0 %}
-      <li>Age: {{ pet_age }} year(s) old</li>
-      {% else %}
-      <li>Age: Younger than 1 year old</li>
-      {% endif %}
-      <li>Lives in: {{ pet.location }}</li>
-    </ul>
-  </p>
-  <p>
-    {{ pet.description | show_newlines }}
-  </p>
-  <p>
-    Owner: <a href="/user/{{ pet.user_id}}">{{ pet.owner }}</a>
-  </p>
-  <hr />
-  {% if session.user_id == pet.user_id %}
-  <h3>Adoption applications for {{ pet.name }}</h3>
-  Applications received: {{ applications | count }}<br />
-  <ul>
-  {% for application in applications %}
-    <li>{{ application.username }}'s <a href="/application/{{ application.id }}">application</a> ({{ application.sent_at }})</li>
+{% block content %}
+<p>
+  {% if images %}
+  {% for image in images %}
+  <img src="/image/{{ image.id }}" alt="Image of the pet" />
   {% endfor %}
-  </ul>
-  <hr />
-  <p>
-    <ul>
-      <li><a href="/edit_pet/{{ pet.id }}">Update this listing</a></li>
-      <li><a href="/delete_pet/{{ pet.id }}">Delete this listing</a></li>
-      <li><a href="/images/{{ pet.id }}">Add or delete images</a></li>
-    </ul>
-  </p>
-  {% elif session.user_id %}
-  <p>
-    {% if applied %}
-    You have sent an application for {{ pet.name }}!<br />
-    <a href="/application/{{ applied }}">View your application</a>
-    {% else %}
-    Would you like to adopt {{ pet.name }}? <br />
-    <a href="/adopt_pet/{{ pet.id }}">Fill in the form to apply</a>
-    {% endif %}
-  </p>
   {% else %}
-  <p>
-    Please <a href="/register">create an account</a> to apply for this pet.
-  </p>
+  No images added yet for this pet.
   {% endif %}
-  <p>
-    <a href="/">Return to all listings</a>
-  </p>
-
-</body>
-
-</html>
+</p>
+<h2>{{ pet.name }}</h2>
+<p>
+  <ul>
+    <li>Breed: {{ pet.breed }}</li>
+    {% if classes %}
+    {% for class in classes %}
+    <li>{{ class.title }}: {{ class.value }}</li>
+    {% endfor %}
+    {% endif %}
+    {% if pet_age > 0 %}
+    <li>Age: {{ pet_age }} year(s) old</li>
+    {% else %}
+    <li>Age: Younger than 1 year old</li>
+    {% endif %}
+    <li>Lives in: {{ pet.location }}</li>
+  </ul>
+</p>
+<p>
+  {{ pet.description | show_newlines }}
+</p>
+<p>
+  Owner: <a href="/user/{{ pet.user_id}}">{{ pet.owner }}</a>
+</p>
+<hr />
+{% if session.user_id == pet.user_id %}
+<h3>Adoption applications for {{ pet.name }}</h3>
+Applications received: {{ applications | count }}<br />
+<ul>
+{% for application in applications %}
+  <li>{{ application.username }}'s <a href="/application/{{ application.id }}">application</a> ({{ application.sent_at }})</li>
+{% endfor %}
+</ul>
+<hr />
+<p>
+  <ul>
+    <li><a href="/edit_pet/{{ pet.id }}">Update this listing</a></li>
+    <li><a href="/delete_pet/{{ pet.id }}">Delete this listing</a></li>
+    <li><a href="/images/{{ pet.id }}">Add or delete images</a></li>
+  </ul>
+</p>
+{% elif session.user_id %}
+<p>
+  {% if applied %}
+  You have sent an application for {{ pet.name }}!<br />
+  <a href="/application/{{ applied }}">View your application</a>
+  {% else %}
+  Would you like to adopt {{ pet.name }}? <br />
+  <a href="/adopt_pet/{{ pet.id }}">Fill in the form to apply</a>
+  {% endif %}
+</p>
+{% else %}
+<p>
+  Please <a href="/register">create an account</a> to apply for this pet.
+</p>
+{% endif %}
+{% endblock %}

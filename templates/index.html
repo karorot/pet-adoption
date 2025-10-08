@@ -1,67 +1,44 @@
-<!DOCTYPE html>
+{% extends "layout.html" %}
 
-<html>
+{% block title %}Rehome a pet{% endblock %}
 
-<head>
-  <title>Rehome a pet</title>
-</head>
-
-<body>
-  <h1>Rehome a pet</h1>
-  {% for message in get_flashed_messages() %}
+{% block content %}
+<h2>Adopt, don't shop</h2>
+{% if not session.user_id %}
+<p>Log in or register to apply for adoption or list your pet for a new home.</p>
+<form action="/login" method="post">
   <p>
-    <b>{{ message }}</b>
+    Username: <br />
+    <input type="text" name="username" required />
   </p>
-  {% endfor %}
-  {% if session.username %}
   <p>
-    You're logged in as {{ session.username }}
+    Password: <br />
+    <input type="password" name="password" required />
   </p>
-  <ul>
-    <li>View your <a href="/user/{{ session.user_id }}">profile</a></li>
-    <li><a href="/logout">Log out</a></li>
-  </ul>
+  <input type="submit" value="Log in" />
+</form>
+<p>
+  Don't have an account yet?<br />
+  <a href="/register">Sign up</a>
+</p>
+{% else %}
+<p>Hi, {{ session.username }}! Nice to see you today.</p>
+{% endif %}
 
-  <h2>List a pet for a new home</h2>
-  Create a profile for your pet: <a href="/new_pet">Fill the form</a>.
-
-  {% else %}
-  <form action="/login" method="post">
-    Log in to apply for adoption or list a pet for a new home.
-    <p>
-      Username: <br />
-      <input type="text" name="username" required />
-    </p>
-    <p>
-      Password: <br />
-      <input type="password" name="password" required />
-    </p>
-    <input type="submit" value="Log in" />
-  </form>
-  <p>
-    Don't have an account yet?<br />
-    <a href="/register">Sign up</a>
-  </p>
-  {% endif %}
-
-  <h2>Find a pet for adoption</h2>
-  {% if listings %}
+<h2>Find a pet</h2>
+{% if listings %}
+<div class="listings">
   {% for listing in listings %}
-  <p>
+  <div>
     <b>{{listing.name}}</b><br />
     <i>{{listing.breed}}</i><br />
     Born in {{listing.birth_year}}<br />
     Living in {{listing.location}}<br />
-    Read more about <a href="pet/{{ listing.id }}">{{listing.name}}</a>
-  </p>
-  <hr />
+    <a href="pet/{{ listing.id }}">Read more</a>
+  </div>
   {% endfor %}
-  {% else %}
-  No pets currently looking for a new home.
-  {% endif %}
-  <p>
-    <a href="/search">Search with a keyword</a>
-  </p>
-</body>
-
-</html>
+</div>
+{% else %}
+No pets currently looking for a new home.
+{% endif %}
+{% endblock %}

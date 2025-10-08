@@ -1,45 +1,34 @@
-<!DOCTYPE html>
+{% extends "layout.html" %}
 
-<html>
+{% block title %}{{ user.username }}'s profile{% endblock %}
 
-<head>
-  <title>Profile</title>
-</head>
-
-<body>
-  <h1>Profile: {{ user.username }}</h1>
-  <p>Located in {{ user.location }}</p>
-  <h3>Pets listed for adoption</h3>
-  <p>You have listed {{ pets | count }} pet(s) for a new home.</p>
-  {% if pets %}
-  <ul>
-    {% for pet in pets %}
-      <li>
-        <a href="/pet/{{ pet.id }}">{{ pet.name }}</a>: {{ pet.breed }}, born in {{ pet.birth_year }}
-        {% if session.user_id == user.id %}
-        (Adoption applications: {{ pet.applied_count }})
-        {% endif %}
-      </li>
-    {% endfor %}
-  </ul>
-  {% endif %}
-  {% if session.user_id == user.id %}
-  <h3>Your adoption applications</h3>
-  You have sent {{ applications | count }} application(s).
-  <ul>
-    {% for application in applications %}
+{% block content %}
+<h2>Profile: {{ user.username }}</h2>
+<p>Located in {{ user.location }}</p>
+<h3>Pets listed for adoption</h3>
+<p>You have listed {{ pets | count }} pet(s) for a new home.</p>
+{% if pets %}
+<ul>
+  {% for pet in pets %}
     <li>
-      {{ application.sent_at}}: {{ application.pet_name }} in {{ application.pet_location }} 
-      (<a href="/application/{{ application.id }}">View</a>)
+      <a href="/pet/{{ pet.id }}">{{ pet.name }}</a>: {{ pet.breed }}, born in {{ pet.birth_year }}
+      {% if session.user_id == user.id %}
+      (Adoption applications: {{ pet.applied_count }})
+      {% endif %}
     </li>
-    {% endfor %}
-  </ul>
-  <h3>Need to rehome a pet?</h3>
-  <p>Create a profile for a new pet by <a href="/new_pet">filling the form</a>.</p>
-  {% endif %}
-  <p>
-    <a href="/">Return to all listings</a>
-  </p>
-</body>
-
-</html>
+  {% endfor %}
+</ul>
+{% endif %}
+{% if session.user_id == user.id %}
+<h3>Your adoption applications</h3>
+You have sent {{ applications | count }} application(s).
+<ul>
+  {% for application in applications %}
+  <li>
+    {{ application.sent_at}}: {{ application.pet_name }} in {{ application.pet_location }} 
+    (<a href="/application/{{ application.id }}">View</a>)
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}

@@ -1,27 +1,18 @@
-<!DOCTYPE html>
+{% extends "layout.html" %}
 
-<html>
+{% block title %}Application details{% endblock %}
 
-<head>
-  <title>Application</title>
-</head>
-
-<body>
-    <h2>Application for {{ application.pet_name }}</h2>
-    <p>
-      Sender: <a href="/user/{{ application.sender_id }}">{{ application.sender }}</a><br />
-      Sent at: {{ application.sent_at }}
-    </p>
-    <h3>Application</h3>
-    <p>
-      {{ application.description | show_newlines }}
-    </p>
-    <p>
-      <a href="/pet/{{ application.pet_id }}">Return to {{ application.pet_name }}'s profile</a>
-    </p>
-    <p>
-      <a href="/">Return to all listings</a>
-    </p>
-</body>
-
-</html>
+{% block content %}
+<h2>Application for {{ application.pet_name }}</h2>
+<p>
+  Sender: <a href="/user/{{ application.sender_id }}">{{ application.sender }}</a><br />
+  Sent at: {{ application.sent_at }}
+</p>
+<h3>Application</h3>
+<p>
+  {{ application.description | show_newlines }}
+</p>
+<p>
+  <a href="/pet/{{ application.pet_id }}">Return to {{ application.pet_name }}'s profile</a>
+</p>
+{% endblock %}
