@@ -68,6 +68,8 @@ def update_pet(pet_id, name, birth_year, breed, description, classes):
         db.execute(sql, [pet_id, title, value])
 
 def delete_pet(pet_id):
+    sql = """DELETE FROM applications WHERE pet_id = ?"""
+    db.execute(sql, [pet_id])
     sql = """DELETE FROM images WHERE pet_id = ?"""
     db.execute(sql, [pet_id])
     sql = """DELETE FROM pet_classes WHERE pet_id = ?"""
