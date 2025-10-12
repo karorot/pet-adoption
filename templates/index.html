@@ -27,9 +27,14 @@
 
 <h2>Find a pet</h2>
 {% if listings %}
-<div class="listings">
+<div class="image-grid">
   {% for listing in listings %}
   <div>
+    {% if listing.image_id %}
+    <div class="image-container">
+      <img src="/image/{{ listing.image_id }}" alt="Image of the pet" />
+    </div>
+    {% endif %}
     <b>{{listing.name}}</b><br />
     <i>{{listing.breed}}</i><br />
     Born in {{listing.birth_year}}<br />

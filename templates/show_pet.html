@@ -5,9 +5,13 @@
 {% block content %}
 <p>
   {% if images %}
+  <div class="image-grid">
   {% for image in images %}
-  <img src="/image/{{ image.id }}" alt="Image of the pet" />
+    <div class="image-container">
+      <img src="/image/{{ image.id }}" alt="Image of the pet" />
+    </div>
   {% endfor %}
+  </div>
   {% else %}
   No images added yet for this pet.
   {% endif %}

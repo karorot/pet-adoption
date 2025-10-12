@@ -18,9 +18,9 @@ def get_classes(pet_id):
     return db.query(sql, [pet_id])
 
 def get_all_pets():
-    sql = """SELECT p.id, p.name, p.breed, p.birth_year, u.location
-            FROM pets p, users u
-            WHERE u.id = p.user_id
+    sql = """SELECT p.id, p.name, p.breed, p.birth_year, u.location, i.id image_id
+            FROM pets p LEFT JOIN users u ON p.user_id = u.id
+                        LEFT JOIN images i ON p.id = i.pet_id
             GROUP BY p.id
             ORDER BY p.id DESC"""
     return db.query(sql)

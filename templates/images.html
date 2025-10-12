@@ -6,17 +6,19 @@
 <h2>Images for {{ pet.name }}</h2>
 {% if images %}
 <form action="/delete_images" method="post">
-  <p>
+  <div class="image-grid">
     {% for image in images %}
-    <img src="/image/{{ image.id }}" alt="Image of the pet" />
-    <input type="checkbox" name="image_id" value="{{ image.id }}" />
-    <br />
-    {% endfor %}
-    <input type="hidden" name="pet_id" value="{{ pet.id }}" />
-    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
-    <input type="submit" value="Delete selected images" />
-  </p>
-  </form>
+    <div class="image-container">
+      <img src="/image/{{ image.id }}" alt="Image of the pet" /><br />
+      <input type="checkbox" name="image_id" value="{{ image.id }}" />
+    </div>
+  {% endfor %}
+  </div>
+  <br />
+  <input type="hidden" name="pet_id" value="{{ pet.id }}" />
+  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
+  <input type="submit" value="Delete selected images" />
+</form>
 {% else %}
 No images added.
 {% endif %}
