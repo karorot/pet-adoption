@@ -20,16 +20,17 @@ body {
 }
 
 .content {
-  margin: 0 3em;
+  margin: 2em 3em;
   padding: 0;
 }
 
 .flash {
-  margin: auto;
-  max-width: 10em;
+  margin: 1em 3em;
+  padding: 1em;
+  max-width: 20em;
   border-radius: 25px;
-  background-color: red;
-  color: white;
+  background-color: lavender;
+  text-align: center;
 }
 
 .image-grid {
