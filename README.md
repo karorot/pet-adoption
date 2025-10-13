@@ -31,3 +31,7 @@ Käynnistä sovellus:
 ```
 $ flask run
 ```
+
+## Attribution
+
+Default pet listing image used on the front page from [Pixabay](https://pixabay.com/illustrations/pawprints-paw-prints-paw-animal-2919733/).
