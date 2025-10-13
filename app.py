@@ -315,11 +315,17 @@ def register():
 
     if request.method == "POST":
         username = request.form["username"]
-        if len(username) > 16:
+        if not username or len(username) > 16:
             forbidden()
         password1 = request.form["password1"]
+        if not password1 or len(password1) > 64:
+            forbidden()
         password2 = request.form["password2"]
+        if not password2 or len(password2) > 64:
+            forbidden()
         location = request.form["location"]
+        if not location:
+            forbidden()
 
         if password1 != password2:
             flash("The passwords don't match.")
@@ -329,11 +335,11 @@ def register():
         try:
             users.create_user(username, password1, location)
         except sqlite3.IntegrityError:
-            flash("The username is already taken.")
+            flash("The username is already taken. Please choose a different username.")
             filled = {"username" : username, "location" : location}
             return render_template("register.html", filled=filled)
-        
-        flash("Account created!")
+
+        flash("Account created! You can now log in.")
         return redirect("/")
 
 @app.route("/user/<int:user_id>")
