@@ -121,16 +121,13 @@ def show_pet(pet_id):
 @app.route("/search/<int:page>")
 def search(page=1, query=""):
     query = request.args.get("query")
-    print("Hakusana:", query)
     page_size = 12
     page_count = 1
 
     if query:
         result_count = pets.search_count(query)
         if result_count:
-            print("Haun tuloksia:", result_count)
             page_count = max(math.ceil(result_count / page_size), 1)
-            print("Sivuja:", page_count)
         results = pets.search(query, page, page_size)
     else:
         query = ""
