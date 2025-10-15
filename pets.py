@@ -1,5 +1,9 @@
 import db
 
+def pet_count():
+    sql = """SELECT COUNT(*) FROM pets"""
+    return db.query(sql)[0][0]
+
 def get_all_classes():
     sql = """SELECT title, value FROM classes ORDER BY id"""
     result = db.query(sql)
@@ -17,13 +21,15 @@ def get_classes(pet_id):
     sql = """SELECT title, value FROM pet_classes WHERE pet_id = ?"""
     return db.query(sql, [pet_id])
 
-def get_all_pets():
+def get_all_pets(page, page_size):
     sql = """SELECT p.id, p.name, p.breed, p.birth_year, u.location, i.id image_id
             FROM pets p LEFT JOIN users u ON p.user_id = u.id
                         LEFT JOIN images i ON p.id = i.pet_id
             GROUP BY p.id
-            ORDER BY p.id DESC"""
-    return db.query(sql)
+            ORDER BY p.id DESC LIMIT ? OFFSET ?"""
+    limit = page_size
+    offset = page_size * (page - 1)
+    return db.query(sql, [limit, offset])
 
 def add_pet(name, birth_year, breed, description, user_id, classes):
     sql = """INSERT INTO pets (name, birth_year, breed, description, user_id)

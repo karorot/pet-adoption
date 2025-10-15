@@ -53,6 +53,10 @@ body {
   object-position: top;
 }
 
+.page-counter {
+  margin: 3em 1em;
+}
+
 a {
   color: darkcyan;
   text-decoration: none;

@@ -2,6 +2,7 @@ import re
 import secrets
 import sqlite3
 from datetime import date
+import math
 from flask import Flask
 from flask import redirect, render_template, request, session, abort, flash, make_response
 import markupsafe
@@ -37,9 +38,19 @@ def show_newlines(content):
     return markupsafe.Markup(content)
 
 @app.route("/")
-def index():
-    all_pets = pets.get_all_pets()
-    return render_template("index.html", listings=all_pets)
+@app.route("/<int:page>")
+def index(page=1):
+    page_size = 12
+    pet_count = pets.pet_count()
+    page_count = max(math.ceil(pet_count / page_size), 1)
+
+    if page < 1:
+        return redirect("/1")
+    if page > page_count:
+        return redirect("/" + str(page_count))
+
+    all_pets = pets.get_all_pets(page, page_size)
+    return render_template("index.html", listings=all_pets, page=page, page_count=page_count)
 
 @app.route("/new_pet")
 def new_pet():

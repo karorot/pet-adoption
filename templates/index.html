@@ -45,6 +45,15 @@
   </div>
   {% endfor %}
 </div>
+<div class="page-counter">
+  {% if page > 1 %}
+  <a href="/{{ page - 1}}">&lt; </a>
+  {% endif %}
+  Page {{ page }}/{{ page_count }}
+  {% if page_count > 1 %}
+  <a href="/{{ page + 1}}"> &gt;</a>
+  {% endif %}
+</div>
 {% else %}
 No pets currently looking for a new home.
 {% endif %}
