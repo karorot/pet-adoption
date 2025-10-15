@@ -118,14 +118,31 @@ def show_pet(pet_id):
                            applications=applications, applied=applied)
 
 @app.route("/search")
-def search():
+@app.route("/search/<int:page>")
+def search(page=1, query=""):
     query = request.args.get("query")
+    print("Hakusana:", query)
+    page_size = 12
+    page_count = 1
+
     if query:
-        results = pets.search(query)
+        result_count = pets.search_count(query)
+        if result_count:
+            print("Haun tuloksia:", result_count)
+            page_count = max(math.ceil(result_count / page_size), 1)
+            print("Sivuja:", page_count)
+        results = pets.search(query, page, page_size)
     else:
         query = ""
         results = []
-    return render_template("/search.html", query=query, results=results)
+
+    if page < 1:
+        return redirect("/search/1")
+    if page > page_count:
+        return redirect("/search/" + str(page_count))
+
+    return render_template("/search.html", query=query, results=results,
+                           page=page, page_count=page_count)
 
 @app.route("/edit_pet/<int:pet_id>")
 def edit_pet(pet_id):

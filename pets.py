@@ -107,7 +107,19 @@ def get_application(application_id):
     result = db.query(sql, [application_id])
     return result[0] if result else None
 
-def search(query):
+def search_count(query):
+    sql = """SELECT COUNT(DISTINCT p.id)
+            FROM pets p, users u, pet_classes c
+            WHERE p.user_id = u.id AND
+                p.id = c.pet_id AND
+                (p.name LIKE ? OR p.description LIKE ? OR
+                p.breed LIKE ? OR u.location LIKE ? OR
+                c.value LIKE ?)"""
+    like = "%" + query + "%"
+    result = db.query(sql, [like, like, like, like, like])
+    return result[0][0] if result else None
+
+def search(query, page, page_size):
     sql = """SELECT p.id, p.name, p.breed, u.location
             FROM pets p, users u, pet_classes c
             WHERE p.user_id = u.id AND
@@ -116,9 +128,12 @@ def search(query):
                 p.breed LIKE ? OR u.location LIKE ? OR
                 c.value LIKE ?)
             GROUP BY p.id
-            ORDER BY p.id DESC"""
+            ORDER BY p.id DESC
+            LIMIT ? OFFSET ?"""
     like = "%" + query + "%"
-    return db.query(sql, [like, like, like, like, like])
+    limit = page_size
+    offset = page_size * (page - 1)
+    return db.query(sql, [like, like, like, like, like, limit, offset])
 
 def get_all_images(pet_id):
     sql = """SELECT id FROM images WHERE pet_id = ?"""

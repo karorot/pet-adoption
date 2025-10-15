@@ -6,7 +6,7 @@
 <h2>Search</h2>
 <form action="/search" method="get">
   <p>
-    <label for="query">Keyword(s)</label>:
+    <label for="query">Keyword</label>:
     <input type="text" name="query" id="query" value="{{ query }}" />
   </p>
   <input type="submit" value="Search" />
@@ -21,6 +21,15 @@
   <hr />
   {% endfor %}
 </ul>
+<div class="page-counter">
+  {% if page > 1 %}
+  <a href="/search/{{ page - 1}}?query={{ query }}">&lt; </a>
+  {% endif %}
+  Page {{ page }}/{{ page_count }}
+  {% if page_count > 1 %}
+  <a href="/search/{{ page + 1}}?query={{ query }}"> &gt;</a>
+  {% endif %}
+</div>
 {% else %}
 <p>
   No results. Try different keywords.
