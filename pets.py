@@ -32,8 +32,8 @@ def get_all_pets(page, page_size):
     return db.query(sql, [limit, offset])
 
 def add_pet(name, birth_year, breed, description, user_id, classes):
-    sql = """INSERT INTO pets (name, birth_year, breed, description, user_id)
-            VALUES (?, ?, ?, ?, ?)"""
+    sql = """INSERT INTO pets (name, birth_year, breed, description, user_id, posted_at)
+            VALUES (?, ?, ?, ?, ?, datetime('now'))"""
     db.execute(sql, [name, birth_year, breed, description, user_id])
 
     pet_id = db.last_insert_id()
@@ -49,6 +49,7 @@ def get_pet(pet_id):
                     p.birth_year,
                     p.breed,
                     p.description,
+                    p.posted_at,
                     u.location,
                     u.id user_id,
                     u.username owner
