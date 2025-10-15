@@ -40,16 +40,15 @@ def show_newlines(content):
 @app.route("/")
 @app.route("/<int:page>")
 def index(page=1):
-    page_size = 12
     pet_count = pets.pet_count()
-    page_count = max(math.ceil(pet_count / page_size), 1)
+    page_count = max(math.ceil(pet_count / config.PAGE_SIZE), 1)
 
     if page < 1:
         return redirect("/1")
     if page > page_count:
         return redirect("/" + str(page_count))
 
-    all_pets = pets.get_all_pets(page, page_size)
+    all_pets = pets.get_all_pets(page, config.PAGE_SIZE)
     return render_template("index.html", listings=all_pets, page=page, page_count=page_count)
 
 @app.route("/new_pet")
@@ -64,16 +63,16 @@ def add_pet():
     check_csrf()
 
     name = request.form["name"]
-    if not name or len(name) > 50:
+    if not name or len(name) > config.PET_NAME_CHAR_LIMIT:
         forbidden()
     birth_year = request.form["birth_year"]
     if not re.search("^(19|20)[0-9]{2}$", birth_year):
         forbidden()
     breed = request.form["breed"]
-    if not breed or len(breed) > 50:
+    if not breed or len(breed) > config.PET_BREED_CHAR_LIMIT:
         forbidden()
     description = request.form["description"]
-    if not description or len(description) > 1000:
+    if not description or len(description) > config.DESC_CHAR_LIMIT:
         forbidden()
 
     all_classes = pets.get_all_classes()
@@ -121,14 +120,13 @@ def show_pet(pet_id):
 @app.route("/search/<int:page>")
 def search(page=1, query=""):
     query = request.args.get("query")
-    page_size = 12
     page_count = 1
 
     if query:
         result_count = pets.search_count(query)
         if result_count:
-            page_count = max(math.ceil(result_count / page_size), 1)
-        results = pets.search(query, page, page_size)
+            page_count = max(math.ceil(result_count / config.PAGE_SIZE), 1)
+        results = pets.search(query, page, config.PAGE_SIZE)
     else:
         query = ""
         results = []
@@ -171,16 +169,16 @@ def update_pet():
         forbidden()
 
     name = request.form["name"]
-    if not name or len(name) > 50:
+    if not name or len(name) > config.PET_NAME_CHAR_LIMIT:
         forbidden()
     birth_year = request.form["birth_year"]
     if not re.search("^(19|20)[0-9]{2}$", birth_year):
         forbidden()
     breed = request.form["breed"]
-    if not breed or len(breed) > 50:
+    if not breed or len(breed) > config.PET_BREED_CHAR_LIMIT:
         forbidden()
     description = request.form["description"]
-    if not description or len(description) > 1000:
+    if not description or len(description) > config.DESC_CHAR_LIMIT:
         forbidden()
 
     all_classes = pets.get_all_classes()
@@ -263,7 +261,7 @@ def add_images():
                 return redirect("/images/" + str(pet_id))
             
             image = file.read()
-            if len(image) > 100 * 1024:
+            if len(image) > config.IMG_SIZE_LIMIT:
                 flash("Image size is too large")
                 return redirect("/images/" + str(pet_id))
             
@@ -311,7 +309,7 @@ def add_application():
         forbidden()
 
     description = request.form["description"]
-    if not description or len(description) > 1000:
+    if not description or len(description) > config.DESC_CHAR_LIMIT:
         forbidden()
 
     user_id = session["user_id"]
@@ -340,13 +338,13 @@ def register():
 
     if request.method == "POST":
         username = request.form["username"]
-        if not username or len(username) > 16:
+        if not username or len(username) > config.USERNAME_CHAR_LIMIT:
             forbidden()
         password1 = request.form["password1"]
-        if not password1 or len(password1) > 64:
+        if not password1 or len(password1) > config.PASSWORD_CHAR_LIMIT:
             forbidden()
         password2 = request.form["password2"]
-        if not password2 or len(password2) > 64:
+        if not password2 or len(password2) > config.PASSWORD_CHAR_LIMIT:
             forbidden()
         location = request.form["location"]
         if not location:
