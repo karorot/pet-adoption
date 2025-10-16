@@ -53,8 +53,23 @@ body {
   object-position: top;
 }
 
-.page-counter {
-  margin: 3em 1em;
+.pagination {
+  display: flex;
+  margin: 1.5em 1em;
+  list-style: none;
+}
+
+.pagination ul {
+  padding: 0;
+}
+
+.pagination li {
+  display: inline-block;
+  text-decoration: none;
+  padding: 0.5em;
+  border: 1px solid gray;
+  margin: 0;
+  border-radius: 5px;
 }
 
 a {

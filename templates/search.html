@@ -21,14 +21,16 @@
   <hr />
   {% endfor %}
 </ul>
-<div class="page-counter">
-  {% if page > 1 %}
-  <a href="/search/{{ page - 1}}?query={{ query }}">&lt; </a>
-  {% endif %}
-  Page {{ page }}/{{ page_count }}
-  {% if page_count > 1 %}
-  <a href="/search/{{ page + 1}}?query={{ query }}"> &gt;</a>
-  {% endif %}
+<div class="pagination">
+  <ul>
+    {% if page > 1 %}
+    <li><a href="/search/{{ page - 1}}?query={{ query }}">&laquo; </a></li>
+    {% endif %}
+    <li>Page {{ page }} / {{ page_count }}</li>
+    {% if page_count > page %}
+    <li><a href="/search/{{ page + 1}}?query={{ query }}"> &raquo;</a></li>
+    {% endif %}
+  </ul>
 </div>
 {% else %}
 <p>
