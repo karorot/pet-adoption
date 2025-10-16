@@ -121,13 +121,12 @@ def search_count(query):
     return result[0][0] if result else None
 
 def search(query, page, page_size):
-    sql = """SELECT p.id, p.name, p.breed, u.location
-            FROM pets p, users u, pet_classes c
-            WHERE p.user_id = u.id AND
-                p.id = c.pet_id AND
-                (p.name LIKE ? OR p.description LIKE ? OR
-                p.breed LIKE ? OR u.location LIKE ? OR
-                c.value LIKE ?)
+    sql = """SELECT p.id, p.name, p.breed, u.location, i.id image_id
+            FROM pets p LEFT JOIN users u ON p.user_id = u.id
+			            LEFT JOIN pet_classes c ON p.id = c.pet_id
+			            LEFT JOIN images i ON p.id = i.pet_id
+            WHERE (p.name LIKE ? OR p.description LIKE ? OR
+            p.breed LIKE ? OR u.location LIKE ? OR c.value LIKE ?)
             GROUP BY p.id
             ORDER BY p.id DESC
             LIMIT ? OFFSET ?"""
