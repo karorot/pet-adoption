@@ -37,6 +37,15 @@ def show_newlines(content):
     content = content.replace("\n", "<br />")
     return markupsafe.Markup(content)
 
+@app.template_filter()
+def count_age(birth_year):
+    pet_age = date.today().year - birth_year
+    if pet_age == 1:
+        return str(pet_age) + " year"
+    if pet_age > 1:
+        return str(pet_age) + " years"
+    return "Less than 1 year"
+
 @app.route("/")
 @app.route("/<int:page>")
 def index(page=1):
@@ -104,17 +113,15 @@ def show_pet(pet_id):
     classes = pets.get_classes(pet_id)
     applications = pets.get_all_applications(pet_id)
 
-    pet_age = date.today().year - pet["birth_year"]
-
     applied = False
     if "user_id" in session:
         for entry in applications:
             if entry["user_id"] == session["user_id"]:
                 applied = entry["id"]
 
-    return render_template("show_pet.html", pet=pet, pet_age=pet_age,
-                           images=images, classes=classes,
-                           applications=applications, applied=applied)
+    return render_template("show_pet.html", pet=pet, images=images,
+                           classes=classes, applications=applications,
+                           applied=applied)
 
 @app.route("/search")
 @app.route("/search/<int:page>")

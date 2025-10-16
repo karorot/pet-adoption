@@ -25,11 +25,7 @@
     <li>{{ class.title }}: {{ class.value }}</li>
     {% endfor %}
     {% endif %}
-    {% if pet_age > 0 %}
-    <li>Age: {{ pet_age }} year(s) old</li>
-    {% else %}
-    <li>Age: Younger than 1 year old</li>
-    {% endif %}
+    <li>Age: {{ pet.birth_year | count_age }} old</li>
     <li>Lives in: {{ pet.location }}</li>
   </ul>
 </p>

@@ -39,7 +39,7 @@
     </div>
     <b>{{listing.name}}</b><br />
     <i>{{listing.breed}}</i><br />
-    Born in {{listing.birth_year}}<br />
+    {{listing.birth_year | count_age }} old<br />
     Living in {{listing.location}}<br />
     <a href="pet/{{ listing.id }}">Read more</a>
   </div>
