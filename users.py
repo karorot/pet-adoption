@@ -41,6 +41,7 @@ def get_applications(user_id, page):
             FROM applications a, pets p, users u
             WHERE a.pet_id = p.id AND p.user_id = u.id AND
                 a.user_id = ?
+            ORDER BY a.id DESC
             LIMIT ? OFFSET ?"""
     limit = config.PAGE_SIZE
     offset = config.PAGE_SIZE * (page - 1)

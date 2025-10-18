@@ -10,14 +10,17 @@
   {% if not applications %}
   <p>No applications sent yet.</p>
   {% else %}
-  <ul>
-    {% for application in applications %}
-    <li>
-      {{ application.sent_at}}: {{ application.pet_name }} in {{ application.pet_location }} 
-      (<a href="/application/{{ application.id }}">View</a>)
-    </li>
-    {% endfor %}
-  </ul>
+  <div class="application">
+    <ul>
+      {% for application in applications %}
+      <li>
+        Application for {{ application.pet_name }} in {{ application.pet_location }}<br />
+        <i>{{ application.sent_at}}</i>
+        <a href="/application/{{ application.id }}" class="split">View</a>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
   {% if app_count > 12 %}
   <div class="pagination">
     <ul>
