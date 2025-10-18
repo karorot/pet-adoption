@@ -16,7 +16,7 @@
     <ul>
       <li><a href="/user/{{ user.id }}" id="{% if current_page == 'pets' %}active{% endif %}">Pets</a></li>
       {% if session.user_id == user.id %}
-      <li><a href="/user/{{ user.id }}/applications" id="{% if current_page == 'applications' %}active{% endif %}">Applications</a></li>
+      <li><a href="/user/{{ user.id }}/applications" id="{% if current_page == 'applications' %}active{% endif %}">Sent applications</a></li>
       {% endif %}
     </ul>
     </h3>

@@ -396,9 +396,13 @@ def show_user(user_id, page=1):
 @app.route("/user/<int:user_id>/applications")
 @app.route("/user/<int:user_id>/applications/<int:page>")
 def show_user_applications(user_id, page=1):
+    require_login()
+
     user = users.get_user(user_id)
     if not user:
         not_found()
+    if user["id"] != session["user_id"]:
+        forbidden()
 
     app_count = users.count_applications(user_id)
     page_count = max(math.ceil(app_count / config.PAGE_SIZE), 1)
