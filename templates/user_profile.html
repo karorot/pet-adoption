@@ -12,7 +12,7 @@
   </ul>
 
   <div class="profile-links">
-    <h3>
+    <h3 id="slash">
     <ul>
       <li><a href="/user/{{ user.id }}" id="{% if current_page == 'pets' %}active{% endif %}">Pets</a></li>
       {% if session.user_id == user.id %}

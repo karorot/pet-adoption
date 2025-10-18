@@ -27,9 +27,11 @@
       {% endif %}
       </a>
     </div>
-    <b>{{ pet.name }}</b><br />
-    {{ pet.breed}} in {{ pet.location }}<br />
-    <a href="/pet/{{ pet.id }}">Read more</a>
+    <ul>
+      <li><b>{{ pet.name }}</b></li>
+      <li>{{ pet.breed}} in {{ pet.location }}</li>
+      <li><a href="/pet/{{ pet.id }}">Read more</a></li>
+    </ul>
   </div>
   {% endfor %}
 </div>
