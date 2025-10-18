@@ -12,7 +12,9 @@
   {% endif %}
 </ul>
 <h3>{{ user.username }}'s pets</h3>
-{% if pets %}
+{% if not pets %}
+<p>No pets listed.</p>
+{% else %}
 <div class="image-grid">
   {% for pet in pets %}
   <div>
@@ -37,12 +39,23 @@
   </div>
   {% endfor %}
 </div>
+<div class="pagination">
+  <ul>
+    {% if page > 1 %}
+    <li><a href="/user/{{ user.id }}/{{ page - 1}}">&laquo;</a></li>
+    {% endif %}
+    <li>Page {{ page }} / {{ page_count }}</li>
+    {% if page_count > page %}
+   <li><a href="/user/{{ user.id }}/{{ page + 1}}">&raquo;</a></li>
+    {% endif %}
+  </ul>
+</div>
 {% endif %}
 {% if session.user_id == user.id %}
 <h3>{{ user.username }}'s adoption applications</h3>
 {% if not applications %}
 <p>No applications sent yet.</p>
-{% endif %}
+{% else %}
 <ul>
   {% for application in applications %}
   <li>
@@ -51,5 +64,6 @@
   </li>
   {% endfor %}
 </ul>
+{% endif %}
 {% endif %}
 {% endblock %}

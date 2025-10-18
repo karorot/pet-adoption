@@ -373,13 +373,23 @@ def register():
         return redirect("/")
 
 @app.route("/user/<int:user_id>")
-def show_user(user_id):
+@app.route("/user/<int:user_id>/<int:page>")
+def show_user(user_id, page=1):
     user = users.get_user(user_id)
     if not user:
         not_found()
-    pets = users.get_pets(user_id)
+
+    pet_count = users.count_pets(user_id)
+    page_count = max(math.ceil(pet_count / config.PAGE_SIZE), 1)
+    if page < 1:
+        return redirect("user/<int:user_id>/1")
+    if page > page_count:
+        return redirect("user/<int:user_id>/" + str(page_count))
+
+    user_pets = users.get_pets(user_id, page)
     applications = users.get_applications(user_id)
-    return render_template("user.html", user=user, pets=pets, applications=applications)
+    return render_template("user.html", user=user, pets=user_pets,
+                           applications=applications, page=page, page_count=page_count)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():

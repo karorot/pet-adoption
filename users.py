@@ -1,6 +1,7 @@
 from werkzeug.security import check_password_hash, generate_password_hash
 
 import db
+import config
 
 def create_user(username, password, location):
     password_hash = generate_password_hash(password)
@@ -15,14 +16,21 @@ def get_user(user_id):
     result = db.query(sql, [user_id])
     return result[0] if result else None
 
-def get_pets(user_id):
+def count_pets(user_id):
+    sql = """SELECT COUNT(id) FROM pets WHERE user_id = ?"""
+    return db.query(sql, [user_id])[0][0]
+
+def get_pets(user_id, page):
     sql = """SELECT p.id, p.name, p.birth_year, p.breed,
                     IFNULL(COUNT(a.pet_id),0) applied_count, i.id image_id
             FROM pets p LEFT JOIN applications a ON p.id = a.pet_id
                         LEFT JOIN images i ON p.id = i.pet_id
             WHERE p.user_id = ?
-            GROUP BY p.id"""
-    return db.query(sql, [user_id])
+            GROUP BY p.id
+            LIMIT ? OFFSET ?"""
+    limit = config.PAGE_SIZE
+    offset = config.PAGE_SIZE * (page - 1)
+    return db.query(sql, [user_id, limit, offset])
 
 def get_applications(user_id):
     sql = """SELECT a.id, a.sent_at, p.name pet_name, u.location pet_location
