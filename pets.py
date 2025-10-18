@@ -1,4 +1,5 @@
 import db
+import config
 
 def pet_count():
     sql = """SELECT COUNT(*) FROM pets"""
@@ -89,11 +90,20 @@ def add_application(pet_id, user_id, description):
             VALUES (?, ?, ?, datetime('now'))"""
     db.execute(sql, [pet_id, user_id, description])
 
-def get_all_applications(pet_id):
-    sql = """SELECT a.id, a.description, a.sent_at, u.id user_id, u.username
+def count_applications(pet_id):
+    sql = """SELECT COUNt(id) FROM applications WHERE pet_id = ?"""
+    return db.query(sql, [pet_id])[0][0]
+
+def get_all_applications(pet_id, page):
+    sql = """SELECT a.id, a.description, a.sent_at, u.id user_id, u.username,
+                    u.location
             FROM applications a, users u
-            WHERE a.pet_id = ? AND a.user_id = u.id"""
-    return db.query(sql, [pet_id])
+            WHERE a.pet_id = ? AND a.user_id = u.id
+            ORDER BY a.id DESC
+            LIMIT ? OFFSET ?"""
+    limit = config.PAGE_SIZE
+    offset = config.PAGE_SIZE * (page - 1)
+    return db.query(sql, [pet_id, limit, offset])
 
 def get_application(application_id):
     sql = """SELECT a.description,

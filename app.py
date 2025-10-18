@@ -105,23 +105,31 @@ def add_pet():
     return redirect("/pet/" + str(pet_id))
 
 @app.route("/pet/<int:pet_id>")
-def show_pet(pet_id):
+@app.route("/pet/<int:pet_id>/applications/<int:page>")
+def show_pet(pet_id, page=1):
     pet = pets.get_pet(pet_id)
     if not pet:
         not_found()
-    images = pets.get_all_images(pet_id)
+    pet_images = pets.get_all_images(pet_id)
     classes = pets.get_classes(pet_id)
-    applications = pets.get_all_applications(pet_id)
+
+    app_count = pets.count_applications(pet_id)
+    page_count = max(math.ceil(app_count / config.PAGE_SIZE), 1)
+    if page < 1:
+        return redirect("/pet/<int:pet_id>/applications/1")
+    if page > page_count:
+        return redirect("/pet/<int:pet_id>/applications/" + str(page_count))
 
     applied = False
+    applications = pets.get_all_applications(pet_id, page)
     if "user_id" in session:
         for entry in applications:
             if entry["user_id"] == session["user_id"]:
                 applied = entry["id"]
 
-    return render_template("show_pet.html", pet=pet, images=images,
-                           classes=classes, applications=applications,
-                           applied=applied)
+    return render_template("show_pet.html", pet=pet, images=pet_images,
+                           classes=classes, applications=applications, app_count=app_count,
+                           applied=applied, page=page, page_count=page_count)
 
 @app.route("/search")
 @app.route("/search/<int:page>")
