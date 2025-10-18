@@ -37,13 +37,24 @@ body {
   display: flex;
   flex-wrap: wrap;
   margin: 1em;
-  gap: 3em;
+  gap: 2em 3em;
+}
+
+.image-grid ul {
+  margin: 0;
+  padding: 0.5em 0 0 0;
+  list-style: none;
 }
 
 .image-container {
   width: 300px;
   height: 300px;
   border: 1px solid black;
+}
+
+.image-container#userProfile {
+  width: 180px;
+  height: 180px;
 }
 
 .image-container img {
@@ -72,6 +83,10 @@ body {
   border-radius: 5px;
 }
 
+.pagination a {
+  padding: 1em 0.5em;
+}
+
 a {
   color: darkcyan;
   text-decoration: none;
@@ -87,6 +102,10 @@ h1 {
 
 h2 {
   margin: 1em 0;
+}
+
+h3 {
+  margin: 2em 0;
 }
 
 nav ul {

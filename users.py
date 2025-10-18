@@ -17,9 +17,9 @@ def get_user(user_id):
 
 def get_pets(user_id):
     sql = """SELECT p.id, p.name, p.birth_year, p.breed,
-                    IFNULL(COUNT(a.pet_id),0) applied_count
-            FROM pets p LEFT JOIN applications a
-            ON a.pet_id = p.id
+                    IFNULL(COUNT(a.pet_id),0) applied_count, i.id image_id
+            FROM pets p LEFT JOIN applications a ON p.id = a.pet_id
+                        LEFT JOIN images i ON p.id = i.pet_id
             WHERE p.user_id = ?
             GROUP BY p.id"""
     return db.query(sql, [user_id])

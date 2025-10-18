@@ -4,24 +4,45 @@
 
 {% block content %}
 <h2>Profile: {{ user.username }}</h2>
-<p>Located in {{ user.location }}</p>
-<h3>Pets listed for adoption</h3>
-<p>You have listed {{ pets | count }} pet(s) for a new home.</p>
-{% if pets %}
 <ul>
-  {% for pet in pets %}
-    <li>
-      <a href="/pet/{{ pet.id }}">{{ pet.name }}</a>: {{ pet.breed }}, born in {{ pet.birth_year }}
-      {% if session.user_id == user.id %}
-      (Adoption applications: {{ pet.applied_count }})
-      {% endif %}
-    </li>
-  {% endfor %}
+  <li>Located in {{ user.location }}</li>
+  <li>{{ pets | count }} pets listed for a new home</li>
+  {% if session.user_id == user.id %}
+  <li>{{ applications | count }} adoption applications sent</li>
+  {% endif %}
 </ul>
+<h3>{{ user.username }}'s pets</h3>
+{% if pets %}
+<div class="image-grid">
+  {% for pet in pets %}
+  <div>
+    <div class="image-container" id="userProfile">
+      <a href="pet/{{ pet.id }}">
+        {% if pet.image_id %}
+        <img src="/image/{{ pet.image_id }}" alt="Image of the pet" />
+        {% else %}
+        <img src="{{ url_for('static', filename='images/default.png') }}" alt="Placeholder image" />
+        {% endif %}
+      </a>
+    </div>
+    <ul>
+      <li><b>{{ pet.name }}</b></li>
+      <li><i>{{ pet.breed }}</i></li>
+      <li>{{ pet.birth_year | count_age }} old</li>
+      {% if session.user_id == user.id %}
+      <li>Applications received: {{ pet.applied_count }}</li>
+      {% endif %}
+      <li><a href="pet/{{ pet.id }}">Profile</a></li>
+    </ul>
+  </div>
+  {% endfor %}
+</div>
 {% endif %}
 {% if session.user_id == user.id %}
-<h3>Your adoption applications</h3>
-You have sent {{ applications | count }} application(s).
+<h3>{{ user.username }}'s adoption applications</h3>
+{% if not applications %}
+<p>No applications sent yet.</p>
+{% endif %}
 <ul>
   {% for application in applications %}
   <li>
