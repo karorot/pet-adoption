@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ user.username }}'s profile{% endblock %}
+
+{% block content %}
+
+{% include "user_profile.html" %}
+
+{% if session.user_id == user.id %}
+  {% if not applications %}
+  <p>No applications sent yet.</p>
+  {% else %}
+  <ul>
+    {% for application in applications %}
+    <li>
+      {{ application.sent_at}}: {{ application.pet_name }} in {{ application.pet_location }} 
+      (<a href="/application/{{ application.id }}">View</a>)
+    </li>
+    {% endfor %}
+  </ul>
+  {% if app_count > 12 %}
+  <div class="pagination">
+    <ul>
+      {% if page > 1 %}
+      <li><a href="/user/{{ user.id }}/applications/{{ page - 1}}">&laquo;</a></li>
+      {% endif %}
+      <li>Page {{ page }} / {{ page_count }}</li>
+      {% if page_count > page %}
+     <li><a href="/user/{{ user.id }}/applications/{{ page + 1}}">&raquo;</a></li>
+      {% endif %}
+    </ul>
+  </div>
+  {% endif %}
+  {% endif %}
+{% endif %}
+
+{% endblock %}

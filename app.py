@@ -382,14 +382,37 @@ def show_user(user_id, page=1):
     pet_count = users.count_pets(user_id)
     page_count = max(math.ceil(pet_count / config.PAGE_SIZE), 1)
     if page < 1:
-        return redirect("user/<int:user_id>/1")
+        return redirect("/user/<int:user_id>/1")
     if page > page_count:
-        return redirect("user/<int:user_id>/" + str(page_count))
+        return redirect("/user/<int:user_id>/" + str(page_count))
 
     user_pets = users.get_pets(user_id, page)
-    applications = users.get_applications(user_id)
-    return render_template("user.html", user=user, pets=user_pets,
-                           applications=applications, page=page, page_count=page_count)
+    app_count = users.count_applications(user_id)
+    current_page = "pets"
+    return render_template("user.html", user=user, pets=user_pets, pet_count=pet_count,
+                           app_count=app_count, page=page, page_count=page_count,
+                           current_page=current_page)
+
+@app.route("/user/<int:user_id>/applications")
+@app.route("/user/<int:user_id>/applications/<int:page>")
+def show_user_applications(user_id, page=1):
+    user = users.get_user(user_id)
+    if not user:
+        not_found()
+
+    app_count = users.count_applications(user_id)
+    page_count = max(math.ceil(app_count / config.PAGE_SIZE), 1)
+    if page < 1:
+        return redirect("/user/<int:user_id>/applications/1")
+    if page > page_count:
+        return redirect("/user/<int:user_id>/applications/" + str(page_count))
+
+    pet_count = users.count_pets(user_id)
+    applications = users.get_applications(user_id, page)
+    current_page = "applications"
+    return render_template("user_applications.html", user=user, applications=applications,
+                           app_count=app_count, pet_count=pet_count, page=page,
+                           page_count=page_count, current_page=current_page)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():

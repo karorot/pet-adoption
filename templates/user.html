@@ -3,15 +3,9 @@
 {% block title %}{{ user.username }}'s profile{% endblock %}
 
 {% block content %}
-<h2>Profile: {{ user.username }}</h2>
-<ul>
-  <li>Located in {{ user.location }}</li>
-  <li>{{ pets | count }} pets listed for a new home</li>
-  {% if session.user_id == user.id %}
-  <li>{{ applications | count }} adoption applications sent</li>
-  {% endif %}
-</ul>
-<h3>{{ user.username }}'s pets</h3>
+
+{% include "user_profile.html" %}
+
 {% if not pets %}
 <p>No pets listed.</p>
 {% else %}
@@ -39,6 +33,7 @@
   </div>
   {% endfor %}
 </div>
+{% if pet_count > 12 %}
 <div class="pagination">
   <ul>
     {% if page > 1 %}
@@ -51,19 +46,6 @@
   </ul>
 </div>
 {% endif %}
-{% if session.user_id == user.id %}
-<h3>{{ user.username }}'s adoption applications</h3>
-{% if not applications %}
-<p>No applications sent yet.</p>
-{% else %}
-<ul>
-  {% for application in applications %}
-  <li>
-    {{ application.sent_at}}: {{ application.pet_name }} in {{ application.pet_location }} 
-    (<a href="/application/{{ application.id }}">View</a>)
-  </li>
-  {% endfor %}
-</ul>
 {% endif %}
-{% endif %}
+
 {% endblock %}

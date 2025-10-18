@@ -32,12 +32,19 @@ def get_pets(user_id, page):
     offset = config.PAGE_SIZE * (page - 1)
     return db.query(sql, [user_id, limit, offset])
 
-def get_applications(user_id):
+def count_applications(user_id):
+    sql = """SELECT COUNT(id) FROM applications WHERE user_id = ?"""
+    return db.query(sql, [user_id])[0][0]
+
+def get_applications(user_id, page):
     sql = """SELECT a.id, a.sent_at, p.name pet_name, u.location pet_location
             FROM applications a, pets p, users u
             WHERE a.pet_id = p.id AND p.user_id = u.id AND
-                a.user_id = ?"""
-    return db.query(sql, [user_id])
+                a.user_id = ?
+            LIMIT ? OFFSET ?"""
+    limit = config.PAGE_SIZE
+    offset = config.PAGE_SIZE * (page - 1)
+    return db.query(sql, [user_id, limit, offset])
 
 def check_login(username, password):
     sql = """SELECT id, password_hash FROM users WHERE username = ?"""
