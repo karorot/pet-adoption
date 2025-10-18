@@ -2,7 +2,7 @@
 secret_key = "4c845f01e524d3e35b476ef8c37df71f"
 
 #configuration constants
-PAGE_SIZE = 12
+PAGE_SIZE = 10
 
 USERNAME_CHAR_LIMIT = 16
 PASSWORD_CHAR_LIMIT = 64

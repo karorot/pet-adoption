@@ -57,7 +57,7 @@ def index(page=1):
     if page > page_count:
         return redirect("/" + str(page_count))
 
-    all_pets = pets.get_all_pets(page, config.PAGE_SIZE)
+    all_pets = pets.get_all_pets(page)
     return render_template("index.html", listings=all_pets, page=page, page_count=page_count)
 
 @app.route("/new_pet")
@@ -141,7 +141,7 @@ def search(page=1, query=""):
         result_count = pets.search_count(query)
         if result_count:
             page_count = max(math.ceil(result_count / config.PAGE_SIZE), 1)
-        results = pets.search(query, page, config.PAGE_SIZE)
+        results = pets.search(query, page)
     else:
         query = ""
         results = []

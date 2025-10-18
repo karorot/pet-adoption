@@ -22,14 +22,14 @@ def get_classes(pet_id):
     sql = """SELECT title, value FROM pet_classes WHERE pet_id = ?"""
     return db.query(sql, [pet_id])
 
-def get_all_pets(page, page_size):
+def get_all_pets(page):
     sql = """SELECT p.id, p.name, p.breed, p.birth_year, u.location, i.id image_id
             FROM pets p LEFT JOIN users u ON p.user_id = u.id
                         LEFT JOIN images i ON p.id = i.pet_id
             GROUP BY p.id
             ORDER BY p.id DESC LIMIT ? OFFSET ?"""
-    limit = page_size
-    offset = page_size * (page - 1)
+    limit = config.PAGE_SIZE
+    offset = config.PAGE_SIZE * (page - 1)
     return db.query(sql, [limit, offset])
 
 def add_pet(name, birth_year, breed, description, user_id, classes):
@@ -130,7 +130,7 @@ def search_count(query):
     result = db.query(sql, [like, like, like, like, like])
     return result[0][0] if result else None
 
-def search(query, page, page_size):
+def search(query, page):
     sql = """SELECT p.id, p.name, p.breed, u.location, i.id image_id
             FROM pets p LEFT JOIN users u ON p.user_id = u.id
 			            LEFT JOIN pet_classes c ON p.id = c.pet_id
@@ -141,8 +141,8 @@ def search(query, page, page_size):
             ORDER BY p.id DESC
             LIMIT ? OFFSET ?"""
     like = "%" + query + "%"
-    limit = page_size
-    offset = page_size * (page - 1)
+    limit = config.PAGE_SIZE
+    offset = config.PAGE_SIZE * (page - 1)
     return db.query(sql, [like, like, like, like, like, limit, offset])
 
 def get_all_images(pet_id):
