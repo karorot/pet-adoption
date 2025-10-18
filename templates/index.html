@@ -31,11 +31,13 @@
   {% for listing in listings %}
   <div>
     <div class="image-container">
+      <a href="pet/{{ listing.id }}">
       {% if listing.image_id %}
       <img src="/image/{{ listing.image_id }}" alt="Image of the pet" />
       {% else %}
       <img src="{{ url_for('static', filename='images/default.png') }}" alt="Placeholder image" />
       {% endif %}
+      </a>
     </div>
     <b>{{listing.name}}</b><br />
     <i>{{listing.breed}}</i><br />

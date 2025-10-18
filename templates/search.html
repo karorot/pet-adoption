@@ -19,11 +19,13 @@
   {% for pet in results %}
   <div>
     <div class="image-container">
+      <a href="pet/{{ pet.id }}">
       {% if pet.image_id %}
       <img src="/image/{{ pet.image_id }}" alt="Image of the pet" />
       {% else %}
       <img src="{{ url_for('static', filename='images/default.png') }}" alt="Placeholder image" />
       {% endif %}
+      </a>
     </div>
     <b>{{ pet.name }}</b><br />
     {{ pet.breed}} in {{ pet.location }}<br />
