@@ -2,7 +2,7 @@ import db
 import config
 
 def pet_count():
-    sql = "SELECT COUNT(*) FROM pets"
+    sql = "SELECT COUNT(id) FROM pets"
     return db.query(sql)[0][0]
 
 def get_all_classes():
