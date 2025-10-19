@@ -31,6 +31,12 @@ def check_csrf():
     if request.form["csrf_token"] != session["csrf_token"]:
         forbidden()
 
+def check_pet(pet):
+    if not pet:
+        not_found()
+    if pet["user_id"] != session["user_id"]:
+        forbidden()
+
 @app.template_filter()
 def show_newlines(content):
     content = str(markupsafe.escape(content))
@@ -166,19 +172,17 @@ def search(page=1, query=""):
 @app.route("/edit_pet/<int:pet_id>")
 def edit_pet(pet_id):
     require_login()
-    
+
     pet = pets.get_pet(pet_id)
-    if not pet:
-        not_found()
-    if pet["user_id"] != session["user_id"]:
-        forbidden()
+    check_pet(pet)
 
     all_classes = pets.get_all_classes()
     pet_classes = {}
     for entry in pets.get_classes(pet_id):
         pet_classes[entry["title"]] = entry["value"]
 
-    return render_template("edit_pet.html", pet=pet, all_classes=all_classes, pet_classes=pet_classes)
+    return render_template("edit_pet.html", pet=pet, all_classes=all_classes,
+                           pet_classes=pet_classes)
 
 @app.route("/update_pet", methods=["POST"])
 def update_pet():
@@ -187,10 +191,7 @@ def update_pet():
 
     pet_id = request.form["pet_id"]
     pet = pets.get_pet(pet_id)
-    if not pet:
-        not_found()
-    if pet["user_id"] != session["user_id"]:
-        forbidden()
+    check_pet(pet)
 
     name = request.form["name"]
     if not name or len(name) > config.PET_NAME_CHAR_LIMIT:
@@ -224,14 +225,11 @@ def delete_pet(pet_id):
     require_login()
 
     pet = pets.get_pet(pet_id)
-    if not pet:
-        not_found()
-    if pet["user_id"] != session["user_id"]:
-        forbidden()
+    check_pet(pet)
 
     if request.method == "GET":
         return render_template("delete_pet.html", pet=pet)
-    
+
     if request.method == "POST":
         check_csrf()
         if "delete" in request.form:
@@ -253,11 +251,9 @@ def show_image(image_id):
 @app.route("/images/<int:pet_id>")
 def images(pet_id):
     require_login()
+
     pet = pets.get_pet(pet_id)
-    if not pet:
-        not_found()
-    if pet["user_id"] != session["user_id"]:
-        forbidden()
+    check_pet(pet)
 
     images = pets.get_all_images(pet_id)
     return render_template("images.html", pet=pet, images=images)
@@ -269,26 +265,23 @@ def add_images():
 
     if request.method == "GET":
         return render_template("images.html")
-    
+
     if request.method == "POST":
         pet_id = request.form["pet_id"]
         pet = pets.get_pet(pet_id)
-        if not pet:
-            not_found()
-        if pet["user_id"] != session["user_id"]:
-            forbidden()
+        check_pet(pet)
 
         files = request.files.getlist("images")
         for file in files:
             if not file.filename.endswith(".jpg") and not file.filename.endswith(".png"):
                 flash("No good! The file type is wrong.")
                 return redirect("/images/" + str(pet_id))
-            
+
             image = file.read()
             if len(image) > config.IMG_SIZE_LIMIT:
                 flash("Too big! Please use a smaller image.")
                 return redirect("/images/" + str(pet_id))
-            
+
             pets.add_image(pet_id, image)
         return redirect("/images/" + str(pet_id))
 
@@ -296,14 +289,11 @@ def add_images():
 def delete_images():
     require_login()
     check_csrf()
-    
+
     pet_id = request.form["pet_id"]
     pet = pets.get_pet(pet_id)
-    if not pet:
-        not_found()
-    if pet["user_id"] != session["user_id"]:
-        forbidden()
-    
+    check_pet(pet)
+
     for image_id in request.form.getlist("image_id"):
         pets.delete_images(pet_id, image_id)
 
