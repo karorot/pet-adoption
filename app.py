@@ -83,7 +83,7 @@ def add_pet():
     name = request.form["name"]
     breed = request.form["breed"]
     description = request.form["description"]
-    if not name or not breed or not description:
+    if not name or not breed:
         forbidden()
     birth_year = request.form["birth_year"]
     if not re.search("^(19|20)[0-9]{2}$", birth_year):
@@ -100,17 +100,21 @@ def add_pet():
             if value not in all_classes[title]:
                 forbidden()
             pet_classes[title] = value
+        else:
+            forbidden()
 
     if len(name) > config.PET_NAME_CHAR_LIMIT or \
         len(breed) > config.PET_BREED_CHAR_LIMIT:
-        flash("Too long! Please limit the name and breed to 40 characters.")
+        flash(f"""Too long! Please limit the name and breed to
+              {config.PET_NAME_CHAR_LIMIT} characters.""")
         filled = {"name": name, "birth_year": birth_year, "breed": breed,
                   "description": description}
         return render_template("new_pet.html", classes=all_classes,
                                filled_classes=pet_classes, filled=filled)
 
     if len(description) > config.DESC_CHAR_LIMIT:
-        flash("Too long! Please limit the description to 1000 characters.")
+        flash(f"""Too long! Please limit the description to
+              {config.DESC_CHAR_LIMIT} characters.""")
         filled = {"name": name, "birth_year": birth_year, "breed": breed,
                   "description": description}
         return render_template("new_pet.html", classes=all_classes,
@@ -219,6 +223,8 @@ def update_pet():
             if value not in all_classes[title]:
                 forbidden()
             classes.append((title, value))
+        else:
+            forbidden()
 
     pets.update_pet(pet_id, name, birth_year, breed, description, classes)
     return redirect("/pet/" + str(pet_id))
@@ -331,7 +337,7 @@ def add_application():
     if not description:
         forbidden()
     if len(description) > config.DESC_CHAR_LIMIT:
-        flash("Too long! Please limit the application to 1000 characters.")
+        flash(f"Too long! Please limit the application to {config.DESC_CHAR_LIMIT} characters.")
         filled = {"description": description}
         return render_template("/adopt_pet.html", pet=pet, filled=filled)
 
@@ -361,7 +367,7 @@ def register():
 
     if request.method == "POST":
         username = request.form["username"]
-        if not username or len(username) > config.USERNAME_CHAR_LIMIT:
+        if not username:
             forbidden()
         password1 = request.form["password1"]
         if not password1 or len(password1) > config.PASSWORD_CHAR_LIMIT:
@@ -372,6 +378,11 @@ def register():
         location = request.form["location"]
         if not location:
             forbidden()
+
+        if len(username) > config.USERNAME_CHAR_LIMIT:
+            flash(f"Too long! Please limit username to {config.USERNAME_CHAR_LIMIT} characters.")
+            filled = {"username" : username, "location" : location}
+            return render_template("register.html", filled=filled)
 
         if password1 != password2:
             flash("Hold up! The passwords don't match.")
