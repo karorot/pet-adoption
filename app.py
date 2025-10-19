@@ -140,9 +140,9 @@ def show_pet(pet_id, page=1):
     app_count = pets.count_applications(pet_id)
     page_count = max(math.ceil(app_count / config.PAGE_SIZE), 1)
     if page < 1:
-        return redirect("/pet/<int:pet_id>/1")
+        return redirect("/pet/" + str(pet_id) + "/1")
     if page > page_count:
-        return redirect("/pet/<int:pet_id>/" + str(page_count))
+        return redirect("/pet/" + str(pet_id) + "/" + str(page_count))
 
     applied = None
     if "user_id" in session:
