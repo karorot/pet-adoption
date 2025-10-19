@@ -3,19 +3,23 @@
 {% block title %}Application details{% endblock %}
 
 {% block content %}
+
 <h2>I want to adopt {{ application.pet_name }}!</h2>
 <ul>
   <li>Sender: <a href="/user/{{ application.sender_id }}">{{ application.sender }}</a></li>
   <li>Sent at: {{ application.sent_at }}</li>
 </ul>
+
 <h3>Application</h3>
 <div class="description-text">
   {{ application.description | show_newlines }}
 </div>
+
 <p>
   <a href="/pet/{{ application.pet_id }}">&laquo; Go to {{ application.pet_name }}'s profile</a><br />
   {% if application.sender_id == session.user_id %}
-  <a href="/user/{{ application.sender_id }}/applications">&laquo; Go to your sent applications</a>
+    <a href="/user/{{ application.sender_id }}/applications">&laquo; Go to your sent applications</a>
   {% endif %}
 </p>
+
 {% endblock %}

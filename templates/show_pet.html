@@ -3,17 +3,19 @@
 {% block title %}{{ pet.name }}{% endblock %}
 
 {% block content %}
+
 {% if images %}
-<div class="image-grid">
-{% for image in images %}
-  <div class="image-container">
-    <img src="/image/{{ image.id }}" alt="Image of the pet" />
+  <div class="image-grid">
+  {% for image in images %}
+    <div class="image-container">
+      <img src="/image/{{ image.id }}" alt="Image of the pet" />
+    </div>
+  {% endfor %}
   </div>
-{% endfor %}
-</div>
 {% else %}
-<p><i>No images added yet for this pet.</i></p>
+  <p><i>No images added yet for this pet.</i></p>
 {% endif %}
+
 <h2>{{ pet.name }}</h2>
 <p>
   <i>Listing created on {{ pet.posted_at }} by <a href="/user/{{ pet.user_id}}">{{ pet.owner }}</a></i>
@@ -21,70 +23,75 @@
 <ul>
   <li>Breed: {{ pet.breed }}</li>
   {% if classes %}
-  {% for class in classes %}
-  <li>{{ class.title }}: {{ class.value }}</li>
-  {% endfor %}
+    {% for class in classes %}
+      <li>{{ class.title }}: {{ class.value }}</li>
+    {% endfor %}
   {% endif %}
   <li>Age: {{ pet.birth_year | count_age }} old</li>
   <li>Lives in: {{ pet.location }}</li>
 </ul>
+
 <h3>More about {{ pet.name }}</h3>
 <div class="description-text">
   {{ pet.description | show_newlines }}
 </div>
+
 {% if session.user_id == pet.user_id %}
-<div class="profile-links">
-  <ul>
-    <li><a href="/edit_pet/{{ pet.id }}">Update this listing</a></li>
-    <li><a href="/delete_pet/{{ pet.id }}">Delete this listing</a></li>
-    <li><a href="/images/{{ pet.id }}">Add or delete images</a></li>
-  </ul>
-</div>
-<h3 id="slash">Received applications</h3>
-<hr />
-{% if applications %}
-{{ app_count }} users would like to offer a new home to {{ pet.name }}!
-{% else %}
-No applications yet.
-{% endif %}
-<div class="application">
-  <ul>
-    {% for application in applications %}
-    <li>
-      {{ application.username }} from {{ application.location }}<br />
-      <i>{{ application.sent_at}}</i>
-      <a href="/application/{{ application.id }}" class="split">View</a>
-    </li>
-    {% endfor %}
-  </ul>
-</div>
-{% if app_count > 12 %}
-<div class="pagination">
-  <ul>
-    {% if page > 1 %}
-    <li><a href="/pet/{{ pet.id }}/applications/{{ page - 1}}">&laquo;</a></li>
-    {% endif %}
-    <li>Page {{ page }} / {{ page_count }}</li>
-    {% if page_count > page %}
-   <li><a href="/pet/{{ pet.id }}/applications/{{ page + 1}}">&raquo;</a></li>
-    {% endif %}
-  </ul>
-</div>
-{% endif %}
-{% elif session.user_id %}
-<div class="flash">
-  {% if applied %}
-  You have sent an application for {{ pet.name }}!<br />
-  <a href="/application/{{ applied }}">&raquo; View your application</a>
+  <div class="profile-links">
+    <ul>
+      <li><a href="/edit_pet/{{ pet.id }}">Update this listing</a></li>
+      <li><a href="/delete_pet/{{ pet.id }}">Delete this listing</a></li>
+      <li><a href="/images/{{ pet.id }}">Add or delete images</a></li>
+    </ul>
+  </div>
+  <h3 id="slash">Received applications</h3>
+  <hr />
+  {% if applications %}
+    {{ app_count }} users would like to offer a new home to {{ pet.name }}!
   {% else %}
-  Would you like to adopt {{ pet.name }}? <br />
-  <a href="/adopt_pet/{{ pet.id }}">&raquo; Fill in the form to apply</a>
+    No applications yet.
   {% endif %}
-</div>
+  <div class="application">
+    <ul>
+      {% for application in applications %}
+        <li>
+          {{ application.username }} from {{ application.location }}<br />
+          <i>{{ application.sent_at}}</i>
+          <a href="/application/{{ application.id }}" class="split">View</a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% if app_count > 12 %}
+    <div class="pagination">
+      <ul>
+        {% if page > 1 %}
+          <li><a href="/pet/{{ pet.id }}/{{ page - 1}}">&laquo;</a></li>
+        {% endif %}
+          <li>Page {{ page }} / {{ page_count }}</li>
+        {% if page_count > page %}
+          <li><a href="/pet/{{ pet.id }}/{{ page + 1}}">&raquo;</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  {% endif %}
+
+{% elif session.user_id %}
+  <div class="flash">
+    {% if applied %}
+      You have sent an application for {{ pet.name }}!<br />
+      <a href="/application/{{ applied.id }}">&raquo; View your application</a>
+    {% else %}
+      Would you like to adopt {{ pet.name }}? <br />
+      <a href="/adopt_pet/{{ pet.id }}">&raquo; Fill in the form to apply</a>
+    {% endif %}
+  </div>
+
 {% else %}
-<div class="flash">
-  Want to offer a home to {{ pet.name }}?<br />
-  <a href="/register">&raquo; Create an account</a>
-</div>
+  <div class="flash">
+    Want to offer a home to {{ pet.name }}?<br />
+    <a href="/register">&raquo; Create an account</a>
+  </div>
 {% endif %}
+
 {% endblock %}

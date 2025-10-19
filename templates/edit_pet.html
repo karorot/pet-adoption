@@ -3,8 +3,10 @@
 {% block title %}Update a listing{% endblock %}
 
 {% block content %}
+
 <h2>{{ pet.name }}</h2>
 <h3>Update the listing for your pet</h3>
+
 <form action="/update_pet" method="post">
   <p>
     <label for="name">Name <span class="required">*</span></label><br />
@@ -16,18 +18,18 @@
   </p>
   <input type="hidden" name="pet_id" value="{{ pet.id }}" />
   {% for class in all_classes %}
-  <p>
-    <label for="class_{{ class }}">{{ class }} <span class="required">*</span></label><br />
-    <select name="classes" id="class_{{ class }}" required>
-      {% for option in all_classes[class] %}
-        {% if pet_classes[class] == option %}
-        <option value="{{ class }}:{{ option }}" selected>{{ option }}</option>
-        {% else %}
-        <option value="{{ class }}:{{ option }}">{{ option }}</option>
-        {% endif %}
-      {% endfor %}
-    </select>
-  </p>
+    <p>
+      <label for="class_{{ class }}">{{ class }} <span class="required">*</span></label><br />
+      <select name="classes" id="class_{{ class }}" required>
+        {% for option in all_classes[class] %}
+          {% if pet_classes[class] == option %}
+            <option value="{{ class }}:{{ option }}" selected>{{ option }}</option>
+          {% else %}
+            <option value="{{ class }}:{{ option }}">{{ option }}</option>
+          {% endif %}
+        {% endfor %}
+      </select>
+    </p>
   {% endfor %}
   <p>
     <label for="breed">Breed <span class="required">*</span></label><br />
@@ -40,7 +42,9 @@
   <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
   <input type="submit" value="Update listing" />
 </form>
+
 <p>
   <a href="/pet/{{ pet.id }}">&laquo; Return without updating</a>
 </p>
+
 {% endblock %}

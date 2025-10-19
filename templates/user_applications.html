@@ -8,32 +8,32 @@
 
 {% if session.user_id == user.id %}
   {% if not applications %}
-  <p>No applications sent yet.</p>
+    <p>No applications sent yet.</p>
   {% else %}
-  <div class="application">
-    <ul>
-      {% for application in applications %}
-      <li>
-        Application for {{ application.pet_name }} in {{ application.pet_location }}<br />
-        <i>{{ application.sent_at}}</i>
-        <a href="/application/{{ application.id }}" class="split">View</a>
-      </li>
-      {% endfor %}
-    </ul>
-  </div>
-  {% if app_count > 12 %}
-  <div class="pagination">
-    <ul>
-      {% if page > 1 %}
-      <li><a href="/user/{{ user.id }}/applications/{{ page - 1}}">&laquo;</a></li>
-      {% endif %}
-      <li>Page {{ page }} / {{ page_count }}</li>
-      {% if page_count > page %}
-     <li><a href="/user/{{ user.id }}/applications/{{ page + 1}}">&raquo;</a></li>
-      {% endif %}
-    </ul>
-  </div>
-  {% endif %}
+    <div class="application">
+      <ul>
+        {% for application in applications %}
+          <li>
+            Application for {{ application.pet_name }} in {{ application.pet_location }}<br />
+            <i>{{ application.sent_at}}</i>
+            <a href="/application/{{ application.id }}" class="split">View</a>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% if app_count > 12 %}
+      <div class="pagination">
+        <ul>
+          {% if page > 1 %}
+            <li><a href="/user/{{ user.id }}/applications/{{ page - 1}}">&laquo;</a></li>
+          {% endif %}
+            <li>Page {{ page }} / {{ page_count }}</li>
+          {% if page_count > page %}
+            <li><a href="/user/{{ user.id }}/applications/{{ page + 1}}">&raquo;</a></li>
+          {% endif %}
+        </ul>
+      </div>
+    {% endif %}
   {% endif %}
 {% endif %}
 

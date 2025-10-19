@@ -1,13 +1,11 @@
-<!DOCTYPE html>
-<html>
-
 <body>
+
   <h2>Profile: {{ user.username }}</h2>
   <ul>
     <li>Located in {{ user.location }}</li>
     <li>{{ pet_count }} pet(s) listed for a new home</li>
     {% if session.user_id == user.id %}
-    <li>{{ app_count }} adoption application(s) sent</li>
+      <li>{{ app_count }} adoption application(s) sent</li>
     {% endif %}
   </ul>
 
@@ -16,12 +14,11 @@
     <ul>
       <li><a href="/user/{{ user.id }}" id="{% if current_page == 'pets' %}active{% endif %}">Pets</a></li>
       {% if session.user_id == user.id %}
-      <li><a href="/user/{{ user.id }}/applications" id="{% if current_page == 'applications' %}active{% endif %}">Sent applications</a></li>
+        <li><a href="/user/{{ user.id }}/applications" id="{% if current_page == 'applications' %}active{% endif %}">Sent applications</a></li>
       {% endif %}
     </ul>
     </h3>
     <hr />
   </div>
-</body>
 
-</html>
+</body>

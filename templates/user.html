@@ -7,45 +7,45 @@
 {% include "user_profile.html" %}
 
 {% if not pets %}
-<p>No pets listed.</p>
+  <p>No pets listed.</p>
 {% else %}
-<div class="image-grid">
-  {% for pet in pets %}
-  <div>
-    <div class="image-container" id="userProfile">
-      <a href="/pet/{{ pet.id }}">
-        {% if pet.image_id %}
-        <img src="/image/{{ pet.image_id }}" alt="Image of the pet" />
-        {% else %}
-        <img src="{{ url_for('static', filename='images/default.png') }}" alt="Placeholder image" />
-        {% endif %}
-      </a>
-    </div>
-    <ul>
-      <li><b>{{ pet.name }}</b></li>
-      <li><i>{{ pet.breed }}</i></li>
-      <li>{{ pet.birth_year | count_age }} old</li>
-      {% if session.user_id == user.id %}
-      <li>Applications received: {{ pet.applied_count }}</li>
-      {% endif %}
-      <li><a href="/pet/{{ pet.id }}">Profile</a></li>
-    </ul>
+  <div class="image-grid">
+    {% for pet in pets %}
+      <div>
+        <div class="image-container" id="userProfile">
+          <a href="/pet/{{ pet.id }}">
+            {% if pet.image_id %}
+              <img src="/image/{{ pet.image_id }}" alt="Image of the pet" />
+            {% else %}
+              <img src="{{ url_for('static', filename='images/default.png') }}" alt="Placeholder image" />
+            {% endif %}
+          </a>
+        </div>
+        <ul>
+          <li><b>{{ pet.name }}</b></li>
+          <li><i>{{ pet.breed }}</i></li>
+          <li>{{ pet.birth_year | count_age }} old</li>
+          {% if session.user_id == user.id %}
+            <li>Applications received: {{ pet.applied_count }}</li>
+          {% endif %}
+          <li><a href="/pet/{{ pet.id }}">Profile</a></li>
+        </ul>
+      </div>
+    {% endfor %}
   </div>
-  {% endfor %}
-</div>
-{% if pet_count > 12 %}
-<div class="pagination">
-  <ul>
-    {% if page > 1 %}
-    <li><a href="/user/{{ user.id }}/{{ page - 1}}">&laquo;</a></li>
-    {% endif %}
-    <li>Page {{ page }} / {{ page_count }}</li>
-    {% if page_count > page %}
-   <li><a href="/user/{{ user.id }}/{{ page + 1}}">&raquo;</a></li>
-    {% endif %}
-  </ul>
-</div>
-{% endif %}
+  {% if pet_count > 12 %}
+    <div class="pagination">
+      <ul>
+        {% if page > 1 %}
+          <li><a href="/user/{{ user.id }}/{{ page - 1}}">&laquo;</a></li>
+        {% endif %}
+          <li>Page {{ page }} / {{ page_count }}</li>
+        {% if page_count > page %}
+          <li><a href="/user/{{ user.id }}/{{ page + 1}}">&raquo;</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  {% endif %}
 {% endif %}
 
 {% endblock %}

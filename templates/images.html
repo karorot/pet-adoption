@@ -3,25 +3,27 @@
 {% block title %}Update images{% endblock %}
 
 {% block content %}
+
 <h2>Images for {{ pet.name }}</h2>
 {% if images %}
-<form action="/delete_images" method="post">
-  <div class="image-grid">
-    {% for image in images %}
-    <div class="image-container">
-      <img src="/image/{{ image.id }}" alt="Image of the pet" /><br />
-      <input type="checkbox" name="image_id" value="{{ image.id }}" />
+  <form action="/delete_images" method="post">
+    <div class="image-grid">
+      {% for image in images %}
+        <div class="image-container">
+          <img src="/image/{{ image.id }}" alt="Image of the pet" /><br />
+          <input type="checkbox" name="image_id" value="{{ image.id }}" />
+        </div>
+      {% endfor %}
     </div>
-  {% endfor %}
-  </div>
-  <br />
-  <input type="hidden" name="pet_id" value="{{ pet.id }}" />
-  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
-  <input type="submit" value="Delete selected images" />
-</form>
+    <br />
+    <input type="hidden" name="pet_id" value="{{ pet.id }}" />
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
+    <input type="submit" value="Delete selected images" />
+  </form>
 {% else %}
-No images added.
+  No images added.
 {% endif %}
+
 <form action="/add_images" method="post" enctype="multipart/form-data">
   <h3 id="slash">Add new images</h3>
   <hr />
@@ -34,7 +36,9 @@ No images added.
   <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
   <input type="submit" value="Upload" />
 </form>
+
 <p>
-  <a href="/pet/{{ pet.id }}">&raquo; Return to {{pet.name }}'s profile</a>
+  <a href="/pet/{{ pet.id }}">&laquo; Return to {{pet.name }}'s profile</a>
 </p>
+
 {% endblock %}

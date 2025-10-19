@@ -3,64 +3,66 @@
 {% block title %}Rehome a pet{% endblock %}
 
 {% block content %}
+
 <h2>Adopt, don't shop</h2>
 {% if not session.user_id %}
-<p>Log in or register to apply for adoption or list your pet for a new home.</p>
-<form action="/login" method="post">
+  <p>Log in or register to apply for adoption or list your pet for a new home.</p>
+  <form action="/login" method="post">
+    <p>
+      Username: <br />
+      <input type="text" name="username" required />
+    </p>
+    <p>
+      Password: <br />
+      <input type="password" name="password" required />
+    </p>
+    <input type="submit" value="Log in" />
+  </form>
   <p>
-    Username: <br />
-    <input type="text" name="username" required />
+    Don't have an account yet?<br />
+    <a href="/register">Sign up</a>
   </p>
-  <p>
-    Password: <br />
-    <input type="password" name="password" required />
-  </p>
-  <input type="submit" value="Log in" />
-</form>
-<p>
-  Don't have an account yet?<br />
-  <a href="/register">Sign up</a>
-</p>
 {% else %}
-<p>Hi, {{ session.username }}! Nice to see you today.</p>
+  <p>Hi, {{ session.username }}! Nice to see you today.</p>
 {% endif %}
 
 <h2>Find a pet</h2>
 {% if listings %}
-<div class="image-grid">
-  {% for listing in listings %}
-  <div>
-    <div class="image-container">
-      <a href="/pet/{{ listing.id }}">
-      {% if listing.image_id %}
-      <img src="/image/{{ listing.image_id }}" alt="Image of the pet" />
-      {% else %}
-      <img src="{{ url_for('static', filename='images/default.png') }}" alt="Placeholder image" />
-      {% endif %}
-      </a>
-    </div>
+  <div class="image-grid">
+    {% for listing in listings %}
+      <div>
+        <div class="image-container">
+          <a href="/pet/{{ listing.id }}">
+          {% if listing.image_id %}
+          <img src="/image/{{ listing.image_id }}" alt="Image of the pet" />
+          {% else %}
+          <img src="{{ url_for('static', filename='images/default.png') }}" alt="Placeholder image" />
+          {% endif %}
+          </a>
+        </div>
+        <ul>
+          <li><b>{{ listing.name }}</b></li>
+          <li><i>{{ listing.breed }}</i></li>
+          <li>{{ listing.birth_year | count_age }} old</li>
+          <li>Living in {{listing.location}}</li>
+          <li><a href="/pet/{{ listing.id }}">Read more</a></li>
+        </ul>
+      </div>
+    {% endfor %}
+  </div>
+  <div class="pagination">
     <ul>
-      <li><b>{{ listing.name }}</b></li>
-      <li><i>{{ listing.breed }}</i></li>
-      <li>{{ listing.birth_year | count_age }} old</li>
-      <li>Living in {{listing.location}}</li>
-      <li><a href="/pet/{{ listing.id }}">Read more</a></li>
+      {% if page > 1 %}
+      <li><a href="/{{ page - 1}}">&laquo;</a></li>
+      {% endif %}
+      <li>Page {{ page }} / {{ page_count }}</li>
+      {% if page_count > page %}
+    <li><a href="/{{ page + 1}}">&raquo;</a></li>
+      {% endif %}
     </ul>
   </div>
-  {% endfor %}
-</div>
-<div class="pagination">
-  <ul>
-    {% if page > 1 %}
-    <li><a href="/{{ page - 1}}">&laquo;</a></li>
-    {% endif %}
-    <li>Page {{ page }} / {{ page_count }}</li>
-    {% if page_count > page %}
-   <li><a href="/{{ page + 1}}">&raquo;</a></li>
-    {% endif %}
-  </ul>
-</div>
 {% else %}
-No pets currently looking for a new home.
+  No pets currently looking for a new home.
 {% endif %}
+
 {% endblock %}
