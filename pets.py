@@ -2,16 +2,15 @@ import db
 import config
 
 def pet_count():
-    sql = """SELECT COUNT(*) FROM pets"""
+    sql = "SELECT COUNT(*) FROM pets"
     return db.query(sql)[0][0]
 
 def get_all_classes():
-    sql = """SELECT title, value FROM classes ORDER BY id"""
+    sql = "SELECT title, value FROM classes ORDER BY id"
     result = db.query(sql)
 
     classes = {}
 
-    # voisiko optimoida?
     for title, value in result:
         classes[title] = []
     for title, value in result:
@@ -19,11 +18,16 @@ def get_all_classes():
     return classes
 
 def get_classes(pet_id):
-    sql = """SELECT title, value FROM pet_classes WHERE pet_id = ?"""
+    sql = "SELECT title, value FROM pet_classes WHERE pet_id = ?"
     return db.query(sql, [pet_id])
 
 def get_all_pets(page):
-    sql = """SELECT p.id, p.name, p.breed, p.birth_year, u.location, i.id image_id
+    sql = """SELECT p.id,
+                    p.name,
+                    p.breed,
+                    p.birth_year,
+                    u.location,
+                    i.id image_id
             FROM pets p LEFT JOIN users u ON p.user_id = u.id
                         LEFT JOIN images i ON p.id = i.pet_id
             GROUP BY p.id
@@ -39,7 +43,7 @@ def add_pet(name, birth_year, breed, description, user_id, classes):
 
     pet_id = db.last_insert_id()
 
-    sql = """INSERT INTO pet_classes (pet_id, title, value) VALUES (?, ?, ?)"""
+    sql = "INSERT INTO pet_classes (pet_id, title, value) VALUES (?, ?, ?)"
     for title, value in classes.items():
         db.execute(sql, [pet_id, title, value])
     return pet_id
@@ -67,22 +71,22 @@ def update_pet(pet_id, name, birth_year, breed, description, classes):
                             description = ?
                         WHERE id = ?"""
     db.execute(sql, [name, birth_year, breed, description, pet_id])
-    
-    sql = """DELETE FROM pet_classes WHERE pet_id = ?"""
+
+    sql = "DELETE FROM pet_classes WHERE pet_id = ?"
     db.execute(sql, [pet_id])
-    
-    sql = """INSERT INTO pet_classes (pet_id, title, value) VALUES (?, ?, ?)"""
+
+    sql = "INSERT INTO pet_classes (pet_id, title, value) VALUES (?, ?, ?)"
     for title, value in classes:
         db.execute(sql, [pet_id, title, value])
 
 def delete_pet(pet_id):
-    sql = """DELETE FROM applications WHERE pet_id = ?"""
+    sql = "DELETE FROM applications WHERE pet_id = ?"
     db.execute(sql, [pet_id])
-    sql = """DELETE FROM images WHERE pet_id = ?"""
+    sql = "DELETE FROM images WHERE pet_id = ?"
     db.execute(sql, [pet_id])
-    sql = """DELETE FROM pet_classes WHERE pet_id = ?"""
+    sql = "DELETE FROM pet_classes WHERE pet_id = ?"
     db.execute(sql, [pet_id])
-    sql = """DELETE FROM pets WHERE id = ?"""
+    sql = "DELETE FROM pets WHERE id = ?"
     db.execute(sql, [pet_id])
 
 def add_application(pet_id, user_id, description):
@@ -91,11 +95,15 @@ def add_application(pet_id, user_id, description):
     db.execute(sql, [pet_id, user_id, description])
 
 def count_applications(pet_id):
-    sql = """SELECT COUNt(id) FROM applications WHERE pet_id = ?"""
+    sql = "SELECT COUNt(id) FROM applications WHERE pet_id = ?"
     return db.query(sql, [pet_id])[0][0]
 
 def get_all_applications(pet_id, page):
-    sql = """SELECT a.id, a.description, a.sent_at, u.id user_id, u.username,
+    sql = """SELECT a.id,
+                    a.description,
+                    a.sent_at,
+                    u.id user_id,
+                    u.username,
                     u.location
             FROM applications a, users u
             WHERE a.pet_id = ? AND a.user_id = u.id
@@ -146,18 +154,18 @@ def search(query, page):
     return db.query(sql, [like, like, like, like, like, limit, offset])
 
 def get_all_images(pet_id):
-    sql = """SELECT id FROM images WHERE pet_id = ?"""
+    sql = "SELECT id FROM images WHERE pet_id = ?"
     return db.query(sql, [pet_id])
 
 def get_image(image_id):
-    sql = """SELECT image FROM images WHERE id = ?"""
+    sql = "SELECT image FROM images WHERE id = ?"
     result = db.query(sql, [image_id])
     return result[0][0] if result else None
 
 def add_image(pet_id, image):
-    sql = """INSERT INTO images (pet_id, image) VALUES (?, ?)"""
+    sql = "INSERT INTO images (pet_id, image) VALUES (?, ?)"
     db.execute(sql, [pet_id, image])
 
 def delete_images(pet_id, image_id):
-    sql = """DELETE FROM images WHERE id = ? AND pet_id = ?"""
+    sql = "DELETE FROM images WHERE id = ? AND pet_id = ?"
     db.execute(sql, [image_id, pet_id])

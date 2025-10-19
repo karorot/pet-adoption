@@ -12,17 +12,21 @@ def create_user(username, password, location):
     db.execute(sql, [username, password_hash, location])
 
 def get_user(user_id):
-    sql = """SELECT id, username, location FROM users WHERE id = ?"""
+    sql = "SELECT id, username, location FROM users WHERE id = ?"
     result = db.query(sql, [user_id])
     return result[0] if result else None
 
 def count_pets(user_id):
-    sql = """SELECT COUNT(id) FROM pets WHERE user_id = ?"""
+    sql = "SELECT COUNT(id) FROM pets WHERE user_id = ?"
     return db.query(sql, [user_id])[0][0]
 
 def get_pets(user_id, page):
-    sql = """SELECT p.id, p.name, p.birth_year, p.breed,
-                    IFNULL(COUNT(a.pet_id),0) applied_count, i.id image_id
+    sql = """SELECT p.id,
+                    p.name,
+                    p.birth_year,
+                    p.breed,
+                    IFNULL(COUNT(a.pet_id),0) applied_count,
+                    i.id image_id
             FROM pets p LEFT JOIN applications a ON p.id = a.pet_id
                         LEFT JOIN images i ON p.id = i.pet_id
             WHERE p.user_id = ?
@@ -33,13 +37,14 @@ def get_pets(user_id, page):
     return db.query(sql, [user_id, limit, offset])
 
 def count_applications(user_id):
-    sql = """SELECT COUNT(id) FROM applications WHERE user_id = ?"""
+    sql = "SELECT COUNT(id) FROM applications WHERE user_id = ?"
     return db.query(sql, [user_id])[0][0]
 
 def get_applications(user_id, page):
     sql = """SELECT a.id, a.sent_at, p.name pet_name, u.location pet_location
             FROM applications a, pets p, users u
-            WHERE a.pet_id = p.id AND p.user_id = u.id AND
+            WHERE a.pet_id = p.id AND
+                p.user_id = u.id AND
                 a.user_id = ?
             ORDER BY a.id DESC
             LIMIT ? OFFSET ?"""
@@ -54,7 +59,7 @@ def check_applied(pet_id, user_id):
     return result[0] if result else None
 
 def check_login(username, password):
-    sql = """SELECT id, password_hash FROM users WHERE username = ?"""
+    sql = "SELECT id, password_hash FROM users WHERE username = ?"
     result = db.query(sql, [username])
     if not result:
         return None

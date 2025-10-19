@@ -3,8 +3,9 @@ import secrets
 import sqlite3
 from datetime import date
 import math
+
 from flask import Flask
-from flask import redirect, render_template, request, session, abort, flash, make_response
+from flask import abort, flash, make_response, redirect, render_template, request, session
 import markupsafe
 
 import db
@@ -64,13 +65,15 @@ def index(page=1):
         return redirect("/" + str(page_count))
 
     all_pets = pets.get_all_pets(page)
-    return render_template("index.html", listings=all_pets, page=page, page_count=page_count)
+    return render_template("index.html", listings=all_pets, page=page,
+                           page_count=page_count)
 
 @app.route("/new_pet")
 def new_pet():
     require_login()
     classes = pets.get_all_classes()
-    return render_template("new_pet.html", classes=classes, filled_classes={}, filled={})
+    return render_template("new_pet.html", classes=classes, filled_classes={},
+                           filled={})
 
 @app.route("/add_pet", methods=["POST"])
 def add_pet():
@@ -243,7 +246,7 @@ def show_image(image_id):
     image = pets.get_image(image_id)
     if not image:
         not_found()
-    
+
     response = make_response(bytes(image))
     response.headers.set("Content-Type", "image")
     return response
@@ -255,9 +258,9 @@ def images(pet_id):
     pet = pets.get_pet(pet_id)
     check_pet(pet)
 
-    images = pets.get_all_images(pet_id)
-    return render_template("images.html", pet=pet, images=images)
-        
+    pet_images = pets.get_all_images(pet_id)
+    return render_template("images.html", pet=pet, images=pet_images)
+
 @app.route("/add_images", methods=["GET", "POST"])
 def add_images():
     require_login()
@@ -302,7 +305,7 @@ def delete_images():
 @app.route("/adopt_pet/<int:pet_id>")
 def adopt_pet(pet_id):
     require_login()
-    
+
     pet = pets.get_pet(pet_id)
     if not pet:
         not_found()
@@ -449,7 +452,7 @@ def login():
         else:
             flash("Hold up! Wrong username or password.")
             return redirect("/")
-    
+
 @app.route("/logout")
 def logout():
     require_login()
