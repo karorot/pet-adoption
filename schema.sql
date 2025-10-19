@@ -41,3 +41,16 @@ CREATE TABLE images (
     pet_id INTEGER REFERENCES pets,
     image BLOB
 );
+
+CREATE INDEX idx_user_pets ON pets (user_id);
+CREATE INDEX idx_user_loc ON users (location);
+
+CREATE INDEX idx_user_applications ON applications (user_id);
+CREATE INDEX idx_pet_applications ON applications (pet_id);
+
+CREATE INDEX idx_pet_images ON images (pet_id);
+
+CREATE INDEX idx_pet_class ON pet_classes (pet_id);
+CREATE INDEX idx_pet_class_value ON pet_classes (value);
+
+CREATE INDEX idx_pet_details ON pets (name, breed, description);
