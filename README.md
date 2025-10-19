@@ -1,33 +1,35 @@
 # Pet adoption
 
-## Sovelluksen toiminnot
+A web application created for the course "Tietokannat ja web-ohjelmointi" at University of Helsinki. In the application, users can create listings to find a new home for their pets and leave applications to other users' pets.
 
-* Käyttäjä pystyy luomaan tunnuksen ja kirjautumaan sisään ja ulos sovelluksesta.
-* Käyttäjä pystyy lisäämään, muokkaamaan ja poistamaan ilmoituksia lemmikistä, jonka haluaisi antaa adoptoitavaksi uuteen kotiin.
-* Ilmoitukseen voi lisätä seuraavia tietoja:
-    * Perustiedot (esim. lemmikin nimi, rotu, sukupuoli, ikä), joista osa toimii tietokantaan tallennettavien luokittelujen kautta.
-    * Kuvia lemmikistä.
-    * Vapaamuotoisen tekstimuotoisen kuvauksen.
-* Käyttäjä pystyy näkemään ja selaamaan sovellukseen lisättyjä lemmikki-ilmoituksia ja etsimään hakusanalla.
-* Käyttäjä pystyy jättämään adoptiohakemuksen toisen käyttäjän lemmikki-ilmoitukseen.
-   * Lemmikin omistaja näkee kaikki lemmikilleen jätetyt hakemukset.
-   * Käyttäjä näkee itse jättämänsä hakemukset.
-* Sovelluksessa on käyttäjäsivut, jotka näyttävät tilastoja, kuten käyttäjän tekemät lemmikki-ilmoitukset ja jättämät hakemukset.
+## Features
 
-## Sovelluksen asennus ja testaus
+* Users can create an account and log in and out of the application.
+* Users can add, edit, and delete listings for pets they would like to put up for adoption to a new home.
+* The following information can be added to a listing:
+    * Basic details (e.g. pet's name, breed, gender, age), some of which are stored and accessed via categories in the database.
+    * Images of the pet.
+    * A free-form text description.
+* Users can view and browse pet listings added to the application and search with a keyword.
+* Users can submit an adoption application for another user's pet.
+    * Pet owners can see the applications submitted for their pets.
+    * Users can see the applications they have submitted themselves.
+* Users have user pages that show statistics, such as the number of pet listings created by them and the applications submitted.
 
-Asenna flask-kirjasto:
+## How to install and test
+
+Install Flask:
 ```
 $ pip install flask
 ```
 
-Luo tietokannan taulut:
+Create the tables for the database:
 ```
 $ sqlite3 database.db < schema.sql
 $ sqlite3 database.db < init.sql
 ```
 
-Käynnistä sovellus:
+Run the application:
 ```
 $ flask run
 ```
