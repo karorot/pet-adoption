@@ -7,11 +7,14 @@
 <p>Describe your living situation and why you would like to adopt this pet.</p>
 <form action="/add_application" method="post">
     <p>
-        <label for="description">Application</label>: <br />
-        <textarea name="description" id="description" rows="8" cols="50" maxlength="1000" required></textarea>
+        <label for="description">Application <span class="required">*</span></label><br />
+        <textarea name="description" id="description" rows="8" cols="50" maxlength="1000" required>{{ filled.description }}</textarea>
     </p>
     <input type="hidden" name="pet_id" value="{{ pet.id }}" />
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
     <input type="submit" value="Apply" />
 </form>
+<p>
+    <a href="/pet/{{ pet.id }}">&laquo; Return to {{ pet.name }}'s profile</a>
+</p>
 {% endblock %}

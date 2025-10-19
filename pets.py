@@ -40,7 +40,7 @@ def add_pet(name, birth_year, breed, description, user_id, classes):
     pet_id = db.last_insert_id()
 
     sql = """INSERT INTO pet_classes (pet_id, title, value) VALUES (?, ?, ?)"""
-    for title, value in classes:
+    for title, value in classes.items():
         db.execute(sql, [pet_id, title, value])
     return pet_id
 

@@ -64,7 +64,7 @@ def index(page=1):
 def new_pet():
     require_login()
     classes = pets.get_all_classes()
-    return render_template("new_pet.html", classes=classes)
+    return render_template("new_pet.html", classes=classes, filled_classes={}, filled={})
 
 @app.route("/add_pet", methods=["POST"])
 def add_pet():
@@ -72,21 +72,17 @@ def add_pet():
     check_csrf()
 
     name = request.form["name"]
-    if not name or len(name) > config.PET_NAME_CHAR_LIMIT:
+    breed = request.form["breed"]
+    description = request.form["description"]
+    if not name or not breed or not description:
         forbidden()
     birth_year = request.form["birth_year"]
     if not re.search("^(19|20)[0-9]{2}$", birth_year):
         forbidden()
-    breed = request.form["breed"]
-    if not breed or len(breed) > config.PET_BREED_CHAR_LIMIT:
-        forbidden()
-    description = request.form["description"]
-    if not description or len(description) > config.DESC_CHAR_LIMIT:
-        forbidden()
 
     all_classes = pets.get_all_classes()
 
-    classes = []
+    pet_classes = {}
     for option in request.form.getlist("classes"):
         if option:
             title, value = option.split(":")
@@ -94,12 +90,27 @@ def add_pet():
                 forbidden()
             if value not in all_classes[title]:
                 forbidden()
-            classes.append((title, value))
+            pet_classes[title] = value
+
+    if len(name) > config.PET_NAME_CHAR_LIMIT or \
+        len(breed) > config.PET_BREED_CHAR_LIMIT:
+        flash("Too long! Please limit the name and breed to 40 characters.")
+        filled = {"name": name, "birth_year": birth_year, "breed": breed,
+                  "description": description}
+        return render_template("new_pet.html", classes=all_classes,
+                               filled_classes=pet_classes, filled=filled)
+
+    if len(description) > config.DESC_CHAR_LIMIT:
+        flash("Too long! Please limit the description to 1000 characters.")
+        filled = {"name": name, "birth_year": birth_year, "breed": breed,
+                  "description": description}
+        return render_template("new_pet.html", classes=all_classes,
+                               filled_classes=pet_classes, filled=filled)
 
     user_id = session["user_id"]
-
     try:
-        pet_id = pets.add_pet(name, birth_year, breed, description, user_id, classes)
+        pet_id = pets.add_pet(name, birth_year, breed, description, user_id,
+                              pet_classes)
     except sqlite3.IntegrityError:
         forbidden()
     return redirect("/pet/" + str(pet_id))
@@ -272,12 +283,12 @@ def add_images():
         files = request.files.getlist("images")
         for file in files:
             if not file.filename.endswith(".jpg") and not file.filename.endswith(".png"):
-                flash("Wrong file type")
+                flash("No good! The file type is wrong.")
                 return redirect("/images/" + str(pet_id))
             
             image = file.read()
             if len(image) > config.IMG_SIZE_LIMIT:
-                flash("Image size is too large")
+                flash("Too big! Please use a smaller image.")
                 return redirect("/images/" + str(pet_id))
             
             pets.add_image(pet_id, image)
@@ -309,7 +320,7 @@ def adopt_pet(pet_id):
         not_found()
     if pet["user_id"] == session["user_id"]:
         forbidden()
-    return render_template("/adopt_pet.html", pet=pet)
+    return render_template("/adopt_pet.html", pet=pet, filled={})
 
 @app.route("/add_application", methods=["POST"])
 def add_application():
@@ -324,8 +335,12 @@ def add_application():
         forbidden()
 
     description = request.form["description"]
-    if not description or len(description) > config.DESC_CHAR_LIMIT:
+    if not description:
         forbidden()
+    if len(description) > config.DESC_CHAR_LIMIT:
+        flash("Too long! Please limit the application to 1000 characters.")
+        filled = {"description": description}
+        return render_template("/adopt_pet.html", pet=pet, filled=filled)
 
     user_id = session["user_id"]
     pets.add_application(pet_id, user_id, description)
@@ -366,14 +381,14 @@ def register():
             forbidden()
 
         if password1 != password2:
-            flash("The passwords don't match.")
+            flash("Hold up! The passwords don't match.")
             filled = {"username" : username, "location" : location}
             return render_template("register.html", filled=filled)
 
         try:
             users.create_user(username, password1, location)
         except sqlite3.IntegrityError:
-            flash("The username is already taken. Please choose a different username.")
+            flash("Sorry, the username is already taken!\nPlease choose a different username.")
             filled = {"username" : username, "location" : location}
             return render_template("register.html", filled=filled)
 
@@ -442,7 +457,7 @@ def login():
             session["csrf_token"] = secrets.token_hex(16)
             return redirect("/")
         else:
-            flash("Wrong username or password.")
+            flash("Hold up! Wrong username or password.")
             return redirect("/")
     
 @app.route("/logout")
