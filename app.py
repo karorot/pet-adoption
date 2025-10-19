@@ -116,7 +116,7 @@ def add_pet():
     return redirect("/pet/" + str(pet_id))
 
 @app.route("/pet/<int:pet_id>")
-@app.route("/pet/<int:pet_id>/applications/<int:page>")
+@app.route("/pet/<int:pet_id>/<int:page>")
 def show_pet(pet_id, page=1):
     pet = pets.get_pet(pet_id)
     if not pet:
@@ -127,16 +127,14 @@ def show_pet(pet_id, page=1):
     app_count = pets.count_applications(pet_id)
     page_count = max(math.ceil(app_count / config.PAGE_SIZE), 1)
     if page < 1:
-        return redirect("/pet/<int:pet_id>/applications/1")
+        return redirect("/pet/<int:pet_id>/1")
     if page > page_count:
-        return redirect("/pet/<int:pet_id>/applications/" + str(page_count))
+        return redirect("/pet/<int:pet_id>/" + str(page_count))
 
-    applied = False
-    applications = pets.get_all_applications(pet_id, page)
+    applied = None
     if "user_id" in session:
-        for entry in applications:
-            if entry["user_id"] == session["user_id"]:
-                applied = entry["id"]
+        applied = users.check_applied(pet_id, session["user_id"])
+    applications = pets.get_all_applications(pet_id, page)
 
     return render_template("show_pet.html", pet=pet, images=pet_images,
                            classes=classes, applications=applications, app_count=app_count,
@@ -319,6 +317,8 @@ def adopt_pet(pet_id):
     if not pet:
         not_found()
     if pet["user_id"] == session["user_id"]:
+        forbidden()
+    if users.check_applied(pet_id, session["user_id"]):
         forbidden()
     return render_template("/adopt_pet.html", pet=pet, filled={})
 

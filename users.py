@@ -47,6 +47,12 @@ def get_applications(user_id, page):
     offset = config.PAGE_SIZE * (page - 1)
     return db.query(sql, [user_id, limit, offset])
 
+def check_applied(pet_id, user_id):
+    sql = """SELECT a.id FROM applications a
+            WHERE a.pet_id = ? AND a.user_id = ?"""
+    result = db.query(sql, [pet_id, user_id])
+    return result[0] if result else None
+
 def check_login(username, password):
     sql = """SELECT id, password_hash FROM users WHERE username = ?"""
     result = db.query(sql, [username])
